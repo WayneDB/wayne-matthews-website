@@ -1,0 +1,54 @@
+:root {
+    --primary: #5C1F24;
+    --secondary: #E6C98A;
+    --background-dark: #26352C;
+    --background-light: #DED3C4;
+    --text-light: #DED3C4;
+    --text-dark: #242321;
+
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'Montserrat', sans-serif;
+
+    --weight-light: 300;
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+
+    --space-xs: 10px;
+    --space-sm: 20px;
+    --space-md: 40px;
+    --space-lg: 70px;
+    --space-xl: 120px;
+
+    --shadow: rgba(0,0,0,0.45);
+    --transition: 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+}
+
+h1,h2,h3 {
+    font-family: var(--font-display);
+}
+
+p,a,button,input {
+    font-family: var(--font-body);
+}
+
+.theme-dark {
+    background: var(--background-dark);
+    color: var(--text-light);
+}
+
+.theme-light {
+    background: var(--background-light);
+    color: var(--text-dark);
+}
