@@ -18,10 +18,10 @@ if (hero) {
         progress = progress * progress;
 
         // Background camera movement
-        const scale = 110 + (progress * 35);
+        const scale = 100 + (progress * 35);
         const position = -progress * 150;
 
-        hero.style.backgroundSize = `${scale}%`;
+        hero.style.zoom = `${scale}%`;
         hero.style.backgroundPosition = `center ${position}%`;
 
         // Content movement + fade

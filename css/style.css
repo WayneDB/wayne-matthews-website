@@ -52,3 +52,17 @@ p,a,button,input {
     background: var(--background-light);
     color: var(--text-dark);
 }
+
+.button {
+    display:inline-block;
+    margin-top:var(--space-sm);
+    padding:14px 25px;
+    background:var(--primary);
+    color:var(--text-light);
+    text-decoration:none;
+}
+
+.button:hover {
+    background:var(--secondary);
+    color:var(--text-dark);
+}

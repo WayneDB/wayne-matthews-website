@@ -6,8 +6,8 @@
     height:100vh;
     width:100%;
     background-image:url("../images/background.jpg");
-    background-size: 110%/*cover*/;
-    background-position:center;
+    background-size: /*110%*/cover;
+    background-position:center 0%;
     background-repeat:no-repeat;
     display:flex;
     justify-content:center;

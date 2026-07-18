@@ -40,20 +40,6 @@
     line-height:1.7;
 }
 
-.spotify-button {
-    display:inline-block;
-    margin-top:var(--space-sm);
-    padding:14px 25px;
-    background:var(--primary);
-    color:var(--text-light);
-    text-decoration:none;
-}
-
-.spotify-button:hover {
-    background:var(--secondary);
-    color:var(--text-dark);
-}
-
 @media(max-width:700px) {
     .release {
         grid-template-columns:1fr;

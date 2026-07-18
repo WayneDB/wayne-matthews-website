@@ -1,0 +1,137 @@
+.bio-content {
+    max-width:800px;
+    margin:auto;
+    padding:var(--space-xl) 40px;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.eyebrow {
+    text-transform:uppercase;
+    letter-spacing:3px;
+    font-size:.75rem;
+    font-weight:var(--weight-medium);
+    color:var(--secondary);
+}
+
+.bio-hero h1 {
+    margin-top:var(--space-xs);
+    font-size:5rem;
+}
+
+.bio-tagline {
+    margin-top:var(--space-md);
+    padding-left:28px;
+    position:relative;
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:1.5rem;
+    color:var(--secondary);
+}
+
+.bio-tagline::before {
+    content:'\201C';
+    position:absolute;
+    left:0;
+    top:-.15em;
+    font-size:1.8rem;
+    color:var(--secondary);
+    opacity:.6;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.bio-body {
+    margin-top:var(--space-lg);
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:60px;
+    align-items:start;
+}
+
+.bio-text p {
+    font-size:1.05rem;
+    line-height:1.9;
+    font-weight:var(--weight-light);
+}
+
+.bio-text p + p {
+    margin-top:var(--space-sm);
+}
+
+.bio-influences {
+    border-left:1px solid var(--secondary);
+    padding-left:28px;
+}
+
+.influences-label {
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:.75rem;
+    font-weight:var(--weight-medium);
+    color:var(--secondary);
+}
+
+.influence-tags {
+    list-style:none;
+    margin-top:var(--space-xs);
+}
+
+.influence-tags li {
+    font-family:var(--font-display);
+    font-size:1.3rem;
+    padding:6px 0;
+}
+
+.influences-note {
+    margin-top:var(--space-xs);
+    font-size:.85rem;
+    font-weight:var(--weight-light);
+    opacity:.75;
+}
+
+/* =========================
+   CTA
+========================= */
+
+.bio-cta {
+    margin-top:var(--space-xl);
+    padding-top:var(--space-lg);
+    border-top:1px solid rgba(222,211,196,.15);
+    text-align:center;
+}
+
+.bio-cta p {
+    font-size:1.1rem;
+    font-weight:var(--weight-light);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px) {
+    .bio-content {
+        padding:100px 20px;
+    }
+
+    .bio-hero h1 {
+        font-size:3.2rem;
+    }
+
+    .bio-body {
+        grid-template-columns:1fr;
+        gap:var(--space-md);
+    }
+
+    .bio-influences {
+        border-left:none;
+        border-top:1px solid var(--secondary);
+        padding-left:0;
+        padding-top:var(--space-sm);
+    }
+}
