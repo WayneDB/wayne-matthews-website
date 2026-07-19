@@ -16,20 +16,18 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/header.css">
-<link rel="stylesheet" href="css/home.css">
 
 </head>
 
 <body class="theme-dark">
-    <div id="header"></div>
+    <div data-component="header"></div>
 
     <main>
         
         <section class="hero">
             <div class="overlay"></div>
-            <div class="hero-content">
-                <div class="content">
+            <div class="hero-content" style="transform: translateY(100px);">
+                <div class="content" style="transform: translateY(40px);">
                     <h1>Wayne Matthews</h1>
                     <h2>Singer • Songwriter</h2>
                     <p>New music. New stories. Coming soon.</p>
@@ -37,8 +35,8 @@
             </div>
         </section>
 
-        <section class="newsletter-section">
-            <div class="newsletter">
+        <!-- <section class="section theme-dark">
+            <div>
                 <h3>Join the mailing list</h3>
                 <p>Be the first to hear about new music, live shows and more.</p>
 
@@ -54,8 +52,10 @@
                     </form>
                 </div>
             </div>
-        </section>
+        </section>-->
     </main>
+
+    <div data-component="footer"></div>
 
 <script src="script.js"></script>
 </body>

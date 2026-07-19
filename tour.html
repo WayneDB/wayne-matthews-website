@@ -11,17 +11,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/tour.css">
 
 </head>
 <body class="theme-dark">
-    <div id="header"></div>
+    <div data-component="header"></div>
 
-    <main class="tour-content">
-        <section class="tour-hero">
+    <main class="page-content">
+        <section class="page-hero">
             <p class="eyebrow">Live</p>
-            <h1>Tour Dates</h1>
+            <h1 class="page-title">Tour Dates</h1>
         </section>
 
         <!--
@@ -62,13 +60,15 @@
                         <td>Sep 12, 2026</td>
                         <td>City, ST</td>
                         <td>Venue Name</td>
-                        <td><a href="#" class="spotify-button">Tickets</a></td>
+                        <td><a href="#" class="spotify-button button">Tickets</a></td>
                     </tr>
                 </tbody>
             </table>
         </section>
         -->
     </main>
+
+    <div data-component="footer"></div>
 
     <script src="script.js"></script>
 </body>
