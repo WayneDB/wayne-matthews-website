@@ -6,26 +6,37 @@
         "releaseDate": "2026-05-20",
         "cover": "images/cover_whycantisavemyself.png",
         "url": "https://distrokid.com/hyperfollow/waynematthews/why-cant-i-save-myself"
-    },{
-        "title": "why can't i save myself",
+    },
+    {
+        "title": "anythingeverything",
         "type": "Single",
         "year": "2026",
-        "releaseDate": "2026-05-20",
-        "cover": "images/cover_whycantisavemyself.png",
-        "url": "https://distrokid.com/hyperfollow/waynematthews/why-cant-i-save-myself"
-    },{
-        "title": "why can't i save myself",
+        "releaseDate": "2026-04-13",
+        "cover": "images/cover_anythingeverything.png",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/anythingeverything"
+    },
+    {
+        "title": "waiting for you to call",
         "type": "Single",
         "year": "2026",
-        "releaseDate": "2026-05-20",
-        "cover": "images/cover_whycantisavemyself.png",
-        "url": "https://distrokid.com/hyperfollow/waynematthews/why-cant-i-save-myself"
-    },{
-        "title": "why can't i save myself",
+        "releaseDate": "2026-01-28",
+        "cover": "images/cover_waitingforyoutocall.png",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/waiting-for-you-to-call"
+    },
+    {
+        "title": "the first to die alone",
         "type": "Single",
-        "year": "2026",
-        "releaseDate": "2026-05-20",
-        "cover": "images/cover_whycantisavemyself.png",
-        "url": "https://distrokid.com/hyperfollow/waynematthews/why-cant-i-save-myself"
+        "year": "2025",
+        "releaseDate": "2025-12-19",
+        "cover": "images/cover_thefirsttodiealone.png",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/the-first-to-die-alone"
+    },
+    {
+        "title": "selfish",
+        "type": "Single",
+        "year": "2025",
+        "releaseDate": "2025-10-24",
+        "cover": "images/cover_selfish.png",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/selfish"
     }
 ]
