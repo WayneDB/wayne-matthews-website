@@ -117,8 +117,22 @@ p, a, button, input {
     padding: var(--space-xl) 20px;
 }
 
+.section-heading {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
 
+.section-heading h2 {
+    font-size: 2.5rem;
+    font-weight: var(--weight-semibold);
+}
 
+.section-heading p {
+    margin-top: var(--space-xs);
+    font-size: 1rem;
+    font-weight: var(--weight-light);
+    opacity: .85;
+}
 
 p {
     margin-top: var(--space-xs);
@@ -763,4 +777,69 @@ p {
     .release {
         grid-template-columns: 1fr;
     }
+}
+
+/* =============================================================
+   GRIDS
+============================================================= */
+
+.grid {
+    display: grid;
+    gap: 40px;
+}
+
+.grid--auto {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+}
+
+/* =============================================================
+   RELEASE CARDS
+============================================================= */
+
+.card {
+    background: rgba(222,211,196,.05);
+    border: 1px solid rgba(222,211,196,.12);
+    transition: transform var(--transition), border-color var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+}
+
+.release-card {
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+    text-decoration: none;
+}
+
+.release-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.release-card-body {
+    padding: 18px;
+}
+
+.release-card-type {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: .65rem;
+    color: var(--secondary);
+}
+
+.release-card-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    margin-top: 4px;
+}
+
+.release-card-year {
+    font-size: .8rem;
+    opacity: .6;
+    margin-top: 4px;
 }

@@ -10,9 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <script src="scripts/sender.js" defer></script>
+
+    <script src="scripts/script.js" defer></script>
 </head>
 <body class="theme-dark">
+    <div data-component="templates"></div>
 
     <main>
         <section class="hero">
@@ -36,7 +38,7 @@
                 </button>
                 
                 <div class="links-divider"><span>Follow on socials</span></div>
-                <div data-component="socials"  style="margin-top: 30px; vertical-align: bottom;"></div>
+                <section class="socials" data-render="socials" style="margin-top: 30px; vertical-align: bottom;"></section>
 
                 <a href="index.html" class="site-link">wayne-matthews.com</a>
             </div>

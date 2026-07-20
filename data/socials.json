@@ -1,0 +1,37 @@
+[
+    {
+        "platform" : "Spotify",
+        "url" : "https://open.spotify.com/artist/52mXoUUWT9j6qUcwM4ZwnO",
+        "iconClass" : "fa-brands fa-spotify"
+    },
+    {
+        "platform" : "Apple Music",
+        "url" : "https://music.apple.com/us/artist/wayne-matthews/1059159907",
+        "iconClass" : "fa-brands fa-itunes-note"
+    },
+    {
+        "platform" : "YouTube",
+        "url" : "https://www.youtube.com/channel/UCkOOKYaRoyXmQNFaw84uhKg",
+        "iconClass" : "fa-brands fa-youtube"
+    },
+    {
+        "platform" : "Instagram",
+        "url" : "https://www.instagram.com/wayne.matthews.music/",
+        "iconClass" : "fa-brands fa-instagram"
+    },
+    {
+        "platform" : "TikTok",
+        "url" : "https://www.tiktok.com/@wayne.matthews.music",
+        "iconClass" : "fa-brands fa-tiktok"
+    },
+    {
+        "platform" : "Facebook",
+        "url" : "https://www.facebook.com/JustWayneMatthews/",
+        "iconClass" : "fa-brands fa-facebook"
+    },
+    {
+        "platform" : "Discord",
+        "url" : "https://discord.gg/KumfM4ccy",
+        "iconClass" : "fa-brands fa-discord"
+    }
+]

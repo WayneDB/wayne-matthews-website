@@ -1,3 +1,9 @@
+/* =========================================================
+   COMPONENT LOADING
+   Pulls in any [data-component] block from /blocks, recursively,
+   then announces "partials:loaded" once everything is in the DOM.
+========================================================= */
+
 async function loadComponents(container = document) {
     const components = container.querySelectorAll("[data-component]");
 
@@ -11,23 +17,84 @@ async function loadComponents(container = document) {
                 throw new Error(`Failed to load ${component}.html`);
             }
 
-            const html = await response.text();
+            element.innerHTML = await response.text();
 
-            element.innerHTML = html;
-
-            await loadComponents(element);
+            await loadComponents(element); // handle nested components
         } catch (error) {
             console.error(error);
         }
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadComponents();
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadComponents();
+    document.dispatchEvent(new Event("partials:loaded"));
 });
 
+
+/* =========================================================
+   DATA-DRIVEN RENDERING
+   Anything marked data-render="x" gets filled in once the
+   shared partials (and their <template> tags) are ready.
+========================================================= */
+
+document.addEventListener("partials:loaded", () => {
+    document.querySelectorAll('[data-render="socials"]').forEach(container => {
+        renderSocials(container);
+    });
+});
+
+function renderSocials(container) {
+    fetch("data/socials.json")
+        .then(response => response.json())
+        .then(data => {
+            const template = document.getElementById("social-icon-template");
+
+            data.forEach(social => {
+                const clone = template.content.cloneNode(true);
+                clone.querySelector("a").href = social.url;
+                clone.querySelector("i").className = social.iconClass;
+
+                container.appendChild(clone);
+            });
+        })
+        .catch(error => console.error("Error loading social icons:", error));
+}
+
+document.addEventListener("partials:loaded", () => {
+    document.querySelectorAll('[data-render="releases"]').forEach(container => {
+        renderReleases(container);
+    });
+});
+
+function renderReleases(container) {
+    fetch("data/releases.json")
+        .then(response => response.json())
+        .then(data => {
+            const template = document.getElementById("release-card-template");
+
+            data.forEach(release => {
+                const clone = template.content.cloneNode(true);
+                clone.querySelector("img").src = release.cover;
+                clone.querySelector("p.release-card-type").textContent = release.type;
+                clone.querySelector("h3.release-card-title").textContent = release.title;
+                clone.querySelector("p.release-card-year").textContent = release.year;
+                clone.querySelector("a").href = release.url;
+
+                container.appendChild(clone);
+            });
+        })
+        .catch(error => console.error("Error loading release cards:", error));
+}
+
+
+/* =========================================================
+   HERO SCROLL EFFECT
+   Fake camera push-in on the homepage hero as the user scrolls.
+========================================================= */
+
 const hero = document.querySelector(".hero");
-const content = document.querySelector(".hero-content");
+const heroContent = document.querySelector(".hero-content");
 
 if (hero) {
     window.addEventListener("scroll", () => {
@@ -35,9 +102,7 @@ if (hero) {
         const heroHeight = hero.offsetHeight;
 
         let progress = Math.min(scrollPosition / heroHeight, 1);
-
-        // Ease-in curve
-        progress = progress * progress;
+        progress = progress * progress; // ease-in curve
 
         // Background camera movement
         const scale = 100 + (progress * 35);
@@ -47,42 +112,38 @@ if (hero) {
         hero.style.backgroundPosition = `center ${position}%`;
 
         // Content movement + fade
-        if (content) {
+        if (heroContent) {
             const opacity = 1 - (progress * 3.5);
             const movement = progress * 300;
 
-            content.style.opacity = opacity;
-            content.style.top = `${movement}px`;
-            content.style.zoom = `${scale}%`;
+            heroContent.style.opacity = opacity;
+            heroContent.style.top = `${movement}px`;
+            heroContent.style.zoom = `${scale}%`;
         }
     });
 }
+
+
+/* =========================================================
+   HIDE NAV ON SCROLL DOWN
+   Reveals again when scrolling up or back at the top.
+========================================================= */
 
 let lastScrollY = window.scrollY;
 
 window.addEventListener("scroll", () => {
     const currentScrollY = window.scrollY;
-    const elements = document.querySelectorAll(".hide-on-scroll");
+    const hideableElements = document.querySelectorAll(".hide-on-scroll");
+
+    const show = () => hideableElements.forEach(el => el.classList.remove("is-hidden"));
+    const hide = () => hideableElements.forEach(el => el.classList.add("is-hidden"));
 
     if (currentScrollY <= 0) {
-        elements.forEach(element => {
-            element.classList.remove("is-hidden");
-        });
-
-        lastScrollY = currentScrollY;
-        return;
-    }
-
-    if (currentScrollY > lastScrollY) {
-        // Scrolling down
-        elements.forEach(element => {
-            element.classList.add("is-hidden");
-        });
+        show();
+    } else if (currentScrollY > lastScrollY) {
+        hide(); // scrolling down
     } else {
-        // Scrolling up
-        elements.forEach(element => {
-            element.classList.remove("is-hidden");
-        });
+        show(); // scrolling up
     }
 
     lastScrollY = currentScrollY;
