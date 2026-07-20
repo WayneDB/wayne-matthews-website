@@ -39,8 +39,24 @@
     box-sizing: border-box;
 }
 
+html {
+    min-height: 100%;
+}
+
 body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: var(--font-body);
+    font-weight: var(--weight-regular);
+}
+
+/* Pushes the footer to the bottom of the viewport on short pages
+   (tour/bio/music) while still flowing normally on tall ones (index,
+   which has its own 100vh hero). The header/templates wrapper divs
+   collapse to ~0 height since .site-header is position: fixed. */
+main {
+    flex: 1 0 auto;
 }
 
 h1, h2, h3 {
@@ -87,7 +103,8 @@ p, a, button, input {
     padding: 15px 30px;
     background: var(--primary);
     color: var(--text-light);
-    text-decoration: none;    flex: 0 0 auto;
+    text-decoration: none;
+    flex: 0 0 auto;
     width: auto !important;
     border: none !important;
     border-radius: 0 !important;
@@ -266,6 +283,7 @@ p {
     transition: color var(--transition), transform var(--transition);
 }
 
+/* Default hover (used by both header and footer, on the dark theme) */
 .header-logo a:hover,
 .main-nav a:hover,
 .socials a:hover {
@@ -276,15 +294,25 @@ p {
     transform: translateY(-3px);
 }
 
+/* Light-theme override is scoped to the header only. The footer keeps
+   its dark translucent bar (var(--shadow)) on every page, so its icons
+   must stay var(--text-light) regardless of the page's theme class —
+   this used to leak and make footer icons unreadable on light pages. */
 .theme-light .site-header {
     background: var(--background-light);
 }
 
-.theme-light .header-logo a,
-.theme-light .main-nav a,
-.theme-light .socials a {
+.theme-light .site-header .header-logo a,
+.theme-light .site-header .main-nav a,
+.theme-light .site-header .socials a {
     color: var(--primary);
     text-shadow: none;
+}
+
+.theme-light .site-header .header-logo a:hover,
+.theme-light .site-header .main-nav a:hover,
+.theme-light .site-header .socials a:hover {
+    color: var(--background-dark);
 }
 
 @media (max-width: 700px) {
@@ -305,7 +333,7 @@ p {
         font-size: .65rem;
     }
 
-    .header-socials {
+    .site-header .socials {
         gap: 12px;
     }
 }
@@ -433,7 +461,7 @@ p {
     align-items: center;
     gap: 16px;
     background: var(--shadow);
-    border: 1px solid rgba(222,211,196,.18);
+    border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
     color: var(--text-light);
     text-decoration: none;
     font-size: .95rem;
@@ -521,7 +549,7 @@ p {
     content: '';
     flex: 1;
     height: 1px;
-    background: rgba(222,211,196,.2);
+    background: color-mix(in srgb, currentColor 20%, transparent);
 }
 
 .links-divider span {
@@ -619,7 +647,7 @@ p {
 .bio-cta {
     margin-top: var(--space-xl);
     padding-top: var(--space-lg);
-    border-top: 1px solid rgba(222,211,196,.15);
+    border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
     text-align: center;
 }
 
@@ -646,12 +674,9 @@ p {
    TOUR PAGE
 ============================================================= */
 
-.tour-content {
-    text-align: center;
-}
-
 .tour-empty {
     margin-top: var(--space-xl);
+    text-align: center;
 }
 
 .spotlight {
@@ -681,10 +706,6 @@ p {
     opacity: .8;
 }
 
-.tour-empty .kit-form {
-    margin-top: var(--space-md);
-}
-
 /* Future dates table (for use once .tour-empty is removed) */
 
 .tour-list {
@@ -705,12 +726,12 @@ p {
     font-weight: var(--weight-medium);
     color: var(--secondary);
     padding: 12px 10px;
-    border-bottom: 1px solid rgba(222,211,196,.25);
+    border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent);
 }
 
 .tour-list td {
     padding: 18px 10px;
-    border-bottom: 1px solid rgba(222,211,196,.12);
+    border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
     font-weight: var(--weight-light);
 }
 
@@ -740,11 +761,6 @@ p {
 /* =============================================================
    MUSIC PAGE
 ============================================================= */
-
-.intro {
-    margin-top: var(--space-xs);
-    font-size: 1.1rem;
-}
 
 .release {
     margin-top: var(--space-lg);
@@ -790,6 +806,10 @@ p {
 
 .grid--auto {
     grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    justify-content: center;
 }
 
 /* =============================================================
@@ -797,8 +817,8 @@ p {
 ============================================================= */
 
 .card {
-    background: rgba(222,211,196,.05);
-    border: 1px solid rgba(222,211,196,.12);
+    background: color-mix(in srgb, currentColor 5%, transparent);
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
     transition: transform var(--transition), border-color var(--transition);
 }
 
@@ -829,7 +849,16 @@ p {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-size: .65rem;
+}
+
+/* Cards currently only appear in the theme-light Music section on
+   index.html, but this keeps the accent color readable either way. */
+.theme-dark .release-card-type {
     color: var(--secondary);
+}
+
+.theme-light .release-card-type {
+    color: var(--primary);
 }
 
 .release-card-title {
