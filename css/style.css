@@ -125,22 +125,23 @@ p, a, button, input {
 ============================================================= */
 
 .section {
-    min-height: 45vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: var(--space-xl) 20px;
+    padding: var(--space-lg) 20px;
 }
 
 .section-heading {
-    text-align: center;
+    width: 100%;
+    text-align: left;
+    padding: 0px var(--space-xl);
     margin-bottom: var(--space-lg);
 }
 
 .section-heading h2 {
-    font-size: 2.5rem;
+    font-size: 6rem;
     font-weight: var(--weight-semibold);
 }
 
@@ -536,7 +537,6 @@ p {
     width: 100%;
     display: flex;
     align-items: center;
-    margin-top: var(--space-xl);
     color: var(--secondary);
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -807,7 +807,6 @@ p {
 .grid--auto {
     grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
     width: 100%;
-    max-width: 1100px;
     margin: 0 auto;
     justify-content: center;
 }
@@ -823,8 +822,9 @@ p {
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    border-color: var(--primary);
+    transform: translateY(-20px);
+    transition: var(--transition);
+    border-color: var(--secondary);
 }
 
 .release-card {
@@ -851,8 +851,6 @@ p {
     font-size: .65rem;
 }
 
-/* Cards currently only appear in the theme-light Music section on
-   index.html, but this keeps the accent color readable either way. */
 .theme-dark .release-card-type {
     color: var(--secondary);
 }
