@@ -114,7 +114,7 @@ function renderFeaturedRelease(container) {
             img.src = release.cover;
             img.alt = `${release.title} cover art`;
             clone.querySelector("p.eyebrow").textContent = release.year;
-            clone.querySelector("h2").textContent = release.title;
+            clone.querySelector("h3").textContent = release.title;
             clone.querySelector("a").href = release.url;
 
             container.appendChild(clone);
@@ -132,6 +132,11 @@ function renderTourDates(container) {
     fetch("data/tourdates.json")
         .then(response => response.json())
         .then(data => {
+            if (!data.length) {
+                container.closest("section")?.remove();
+                return;
+            }
+
             const template = document.getElementById("tour-date-template");
 
             let tourdates = [...data].sort(
@@ -146,8 +151,14 @@ function renderTourDates(container) {
             tourdates.forEach(tourdate => {
                 const clone = template.content.cloneNode(true);
                 clone.querySelector("h3").textContent = tourdate.title;
-                clone.querySelector("p").textContent = tourdate.date;
-                clone.querySelector("a").href = tourdate.url;
+                clone.querySelector("p.tour-date-date").textContent = tourdate.date;
+                clone.querySelector("p.tour-date-location").textContent = tourdate.location;
+
+                var link = clone.querySelector("a");
+                if(tourdate.url)
+                    link.href = tourdate.url;
+                else
+                    link.remove();
 
                 container.appendChild(clone);
             });

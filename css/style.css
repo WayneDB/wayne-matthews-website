@@ -93,6 +93,22 @@ p, a, button, input {
     pointer-events: none;
 }
 
+.horizontal-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs)
+}
+
+@media (max-width: 700px) {
+    h2 {
+        font-size: 2.5rem;
+    }
+
+    h3 {
+        font-size: 2rem;
+    }
+}
+
 /* =============================================================
    BUTTONS
 ============================================================= */
@@ -158,6 +174,10 @@ p {
 }
 
 @media (max-width: 700px) {
+    .section-heading h2 {
+        font-size: 2.5rem;
+    }
+
     h3 {
         font-size: 2rem;
     }
@@ -436,6 +456,13 @@ p {
     }
 }
 
+@media (max-width: 700px) {
+
+    .content h1 {
+        font-size: 3.5rem;
+    }
+}
+
 /* =============================================================
    LINKS PAGE
 ============================================================= */
@@ -538,12 +565,6 @@ p {
     font-family: var(--font-display);
     font-size: 1.15rem;
     font-weight: var(--weight-semibold);
-}
-
-.link-btn:not(.featured) .link-btn-label {
-    font-family: var(--font-body);
-    font-size: .95rem;
-    font-weight: var(--weight-medium);
 }
 
 .links-divider {
@@ -807,10 +828,6 @@ p {
     max-width: 400px;
 }
 
-.featured-release-info h2 {
-    font-size: 4rem;
-}
-
 @media (max-width: 700px) {
     .featured-release {
         grid-template-columns: 1fr;
@@ -871,4 +888,65 @@ p {
     font-size: .8rem;
     opacity: .6;
     margin-top: 4px;
+}
+
+/* =============================================================
+   HOMEPAGE TOUR DATES (rendered via data-render="tour-dates")
+============================================================= */
+
+[data-render="tour-dates"] {
+    width: 100%;
+    max-width: 700px;
+    margin: var(--space-md) auto 0;
+    text-align: left;
+}
+
+.tour-date-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 10px;
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    transition: var(--transition);
+}
+
+/*.tour-date-row:hover {
+    cursor: pointer;
+    transform: scale(110%);
+    transition: var(--transition);
+    background-color: var(--shadow);
+}*/
+
+.tour-date-row:last-child {
+    border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.tour-date-date {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: .75rem;
+    font-weight: var(--weight-medium);
+    color: var(--secondary);
+    margin-top: 0;
+}
+
+.tour-date-title {
+    margin-top: 4px;
+    font-size: 1.6rem;
+}
+
+.tour-date-button {
+    margin-top: 0;
+    padding: 12px 26px;
+    font-size: .8rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+    .tour-date-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
 }
