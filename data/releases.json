@@ -1,42 +1,98 @@
 [
     {
-        "title": "why can't i save myself",
+        "title": "a thousand times",
         "type": "Single",
-        "year": "2026",
-        "releaseDate": "2026-05-20",
-        "cover": "images/cover_whycantisavemyself.png",
-        "url": "https://distrokid.com/hyperfollow/waynematthews/why-cant-i-save-myself"
+        "year": "2023",
+        "releaseDate": "2023-07-21",
+        "cover": "images/covers/cover_athousandtimes.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/a-thousand-times"
     },
     {
-        "title": "anythingeverything",
+        "title": "never meant to lose you",
         "type": "Single",
-        "year": "2026",
-        "releaseDate": "2026-04-13",
-        "cover": "images/cover_anythingeverything.png",
-        "url": "https://distrokid.com/hyperfollow/waynematthews/anythingeverything"
+        "year": "2023",
+        "releaseDate": "2023-12-22",
+        "cover": "images/covers/cover_nevermeanttoloseyou.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/never-meant-to-lose-you"
     },
     {
-        "title": "waiting for you to call",
+        "title": "that evening's evil",
         "type": "Single",
-        "year": "2026",
-        "releaseDate": "2026-01-28",
-        "cover": "images/cover_waitingforyoutocall.png",
-        "url": "https://distrokid.com/hyperfollow/waynematthews/waiting-for-you-to-call"
+        "year": "2024",
+        "releaseDate": "2024-06-17",
+        "cover": "images/covers/cover_thateveningsevil.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/that-evenings-evil"
     },
     {
-        "title": "the first to die alone",
+        "title": "don't tell me",
+        "type": "EP",
+        "year": "2025",
+        "releaseDate": "2025-05-09",
+        "cover": "images/covers/cover_donttellme.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/dont-tell-me"
+    },
+    {
+        "title": "when i no longer need you",
         "type": "Single",
         "year": "2025",
-        "releaseDate": "2025-12-19",
-        "cover": "images/cover_thefirsttodiealone.png",
-        "url": "https://distrokid.com/hyperfollow/waynematthews/the-first-to-die-alone"
+        "releaseDate": "2025-06-06",
+        "cover": "images/covers/cover_wheninolongerneedyou.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/when-i-no-longer-need-you"
+    },
+    {
+        "title": "know this isn't your fault",
+        "type": "Single",
+        "year": "2025",
+        "releaseDate": "2025-08-08",
+        "cover": "images/covers/cover_knowthisisntyourfault.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/know-this-isnt-your-fault"
+    },
+    {
+        "title": "have a good life",
+        "type": "Single",
+        "year": "2025",
+        "releaseDate": "2025-09-11",
+        "cover": "images/covers/cover_haveagoodlife.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/have-a-good-life"
     },
     {
         "title": "selfish",
         "type": "Single",
         "year": "2025",
         "releaseDate": "2025-10-24",
-        "cover": "images/cover_selfish.png",
+        "cover": "images/covers/cover_selfish.jpg",
         "url": "https://distrokid.com/hyperfollow/waynematthews/selfish"
+    },
+    {
+        "title": "the first to die alone",
+        "type": "Single",
+        "year": "2025",
+        "releaseDate": "2025-12-19",
+        "cover": "images/covers/cover_thefirsttodiealone.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/the-first-to-die-alone"
+    },
+    {
+        "title": "waiting for you to call",
+        "type": "Single",
+        "year": "2026",
+        "releaseDate": "2026-01-28",
+        "cover": "images/covers/cover_waitingforyoutocall.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/waiting-for-you-to-call"
+    },
+    {
+        "title": "anythingeverything",
+        "type": "Single",
+        "year": "2026",
+        "releaseDate": "2026-04-13",
+        "cover": "images/covers/cover_anythingeverything.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/anythingeverything"
+    },
+    {
+        "title": "why can't i save myself",
+        "type": "Single",
+        "year": "2026",
+        "releaseDate": "2026-05-20",
+        "cover": "images/covers/cover_whycantisavemyself.jpg",
+        "url": "https://distrokid.com/hyperfollow/waynematthews/why-cant-i-save-myself"
     }
 ]

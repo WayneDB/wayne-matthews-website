@@ -73,7 +73,16 @@ function renderReleases(container) {
         .then(data => {
             const template = document.getElementById("release-card-template");
 
-            data.forEach(release => {
+            let releases = [...data].sort(
+                (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
+            );
+
+            const limit = container.dataset.limit;
+            if (limit) {
+                releases = releases.slice(0, Number(limit));
+            }
+
+            releases.forEach(release => {
                 const clone = template.content.cloneNode(true);
                 clone.querySelector("img").src = release.cover;
                 clone.querySelector("p.release-card-type").textContent = release.type;
@@ -85,6 +94,32 @@ function renderReleases(container) {
             });
         })
         .catch(error => console.error("Error loading release cards:", error));
+}
+
+document.addEventListener("partials:loaded", () => {
+    document.querySelectorAll('[data-render="featured-release"]').forEach(container => {
+        renderFeaturedRelease(container);
+    });
+});
+
+function renderFeaturedRelease(container) {
+    fetch("data/releases.json")
+        .then(response => response.json())
+        .then(data => {
+            const template = document.getElementById("featured-release-template");
+            const release = data.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))[0];
+
+            const clone = template.content.cloneNode(true);
+            const img = clone.querySelector("img");
+            img.src = release.cover;
+            img.alt = `${release.title} cover art`;
+            clone.querySelector("p.eyebrow").textContent = release.year;
+            clone.querySelector("h2").textContent = release.title;
+            clone.querySelector("a").href = release.url;
+
+            container.appendChild(clone);
+        })
+        .catch(error => console.error("Error loading featured release:", error));
 }
 
 
@@ -147,4 +182,26 @@ window.addEventListener("scroll", () => {
     }
 
     lastScrollY = currentScrollY;
+});
+ 
+document.addEventListener("partials:loaded", () => {
+    const header = document.querySelector(".site-header");
+    if (!header) return;
+ 
+    const hero = document.querySelector(".hero");
+ 
+    // No hero on this page (bio/tour/music) — header is solid immediately.
+    if (!hero) {
+        header.classList.add("solid");
+        return;
+    }
+ 
+    // Hero present (index/links) — solid only once scrolled past it.
+    const updateHeaderState = () => {
+        const heroBottom = hero.getBoundingClientRect().bottom;
+        header.classList.toggle("solid", heroBottom <= 0);
+    };
+ 
+    updateHeaderState();
+    window.addEventListener("scroll", updateHeaderState);
 });

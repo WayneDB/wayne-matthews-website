@@ -137,7 +137,6 @@ p, a, button, input {
     width: 100%;
     text-align: left;
     padding: 0px var(--space-xl);
-    margin-bottom: var(--space-lg);
 }
 
 .section-heading h2 {
@@ -180,6 +179,7 @@ p {
 
 .page-title {
     font-size: 5rem;
+    margin-bottom: var(--space-md);
 }
 
 @media (max-width: 700px) {
@@ -223,6 +223,16 @@ p {
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     z-index: 100;
+    background: transparent;
+    transition: background var(--transition);
+}
+
+.theme-dark .site-header.solid {
+    background: var(--background-dark);
+}
+ 
+.theme-light .site-header.solid {
+    background: var(--background-light);
 }
 
 .header-logo {
@@ -542,6 +552,7 @@ p {
     letter-spacing: 2px;
     font-size: .7rem;
     font-weight: var(--weight-medium);
+    margin-top: var(--space-md);
 }
 
 .links-divider::before,
@@ -759,48 +770,12 @@ p {
 }
 
 /* =============================================================
-   MUSIC PAGE
-============================================================= */
-
-.release {
-    margin-top: var(--space-lg);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-}
-
-.release-image img {
-    width: 100%;
-}
-
-.release-info h2 {
-    font-size: 4rem;
-}
-
-.release-type {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: .8rem;
-}
-
-.release-info p {
-    margin-top: var(--space-sm);
-    line-height: 1.7;
-}
-
-@media (max-width: 700px) {
-    .release {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* =============================================================
    GRIDS
 ============================================================= */
 
 .grid {
     display: grid;
+    padding: var(--space-lg);
     gap: 40px;
 }
 
@@ -814,6 +789,30 @@ p {
 /* =============================================================
    RELEASE CARDS
 ============================================================= */
+
+.featured-release {
+    padding: var(--space-lg);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 60px;
+    align-items: center;
+    text-align: left;
+}
+
+.featured-release-image img {
+    width: 100%;
+    max-width: 400px;
+}
+
+.featured-release-info h2 {
+    font-size: 4rem;
+}
+
+@media (max-width: 700px) {
+    .featured-release {
+        grid-template-columns: 1fr;
+    }
+}
 
 .card {
     background: color-mix(in srgb, currentColor 5%, transparent);
