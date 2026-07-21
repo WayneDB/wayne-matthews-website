@@ -227,6 +227,10 @@ p {
     transition: background var(--transition);
 }
 
+.site-header .socials {
+    justify-self: end;
+}
+
 .theme-dark .site-header.solid {
     background: var(--background-dark);
 }
@@ -252,9 +256,10 @@ p {
 
 .footer {
     width: 100%;
-    height: 50px;
-    padding: 0 25px;
+    padding: var(--space-md);
     display: grid;
+    gap: var(--space-sm);
+    justify-content: center;
     align-items: center;
     z-index: 100;
     background: var(--shadow);
@@ -281,6 +286,14 @@ p {
     padding-bottom: 5px;
 }
 
+.site-header .socials{
+    justify-self: end;
+}
+
+.footer .socials{
+    justify-self: center;
+}
+
 .socials {
     justify-self: end;
     display: flex;
@@ -302,7 +315,7 @@ p {
 }
 
 .socials a:hover {
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(150%);
 }
 
 /* Light-theme override is scoped to the header only. The footer keeps
@@ -821,7 +834,7 @@ p {
 }
 
 .card:hover {
-    transform: translateY(-20px);
+    transform: translateY(-30px) scale(110%);
     transition: var(--transition);
     border-color: var(--secondary);
 }

@@ -122,6 +122,38 @@ function renderFeaturedRelease(container) {
         .catch(error => console.error("Error loading featured release:", error));
 }
 
+document.addEventListener("partials:loaded", () => {
+    document.querySelectorAll('[data-render="tour-dates"]').forEach(container => {
+        renderTourDates(container);
+    });
+});
+
+function renderTourDates(container) {
+    fetch("data/tourdates.json")
+        .then(response => response.json())
+        .then(data => {
+            const template = document.getElementById("tour-date-template");
+
+            let tourdates = [...data].sort(
+                (a, b) => new Date(b.date) - new Date(a.date)
+            );
+
+            const limit = container.dataset.limit;
+            if (limit) {
+                tourdates = tourdates.slice(0, Number(limit));
+            }
+
+            tourdates.forEach(tourdate => {
+                const clone = template.content.cloneNode(true);
+                clone.querySelector("h3").textContent = tourdate.title;
+                clone.querySelector("p").textContent = tourdate.date;
+                clone.querySelector("a").href = tourdate.url;
+
+                container.appendChild(clone);
+            });
+        })
+        .catch(error => console.error("Error loading release cards:", error));
+}
 
 /* =========================================================
    HERO SCROLL EFFECT
