@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async () => {
    shared partials (and their <template> tags) are ready.
 ========================================================= */
 
+// SOCIALS
 document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="socials"]').forEach(container => {
         renderSocials(container);
@@ -52,8 +53,8 @@ function renderSocials(container) {
 
             data.forEach(social => {
                 const clone = template.content.cloneNode(true);
-                clone.querySelector("a").href = social.url;
-                clone.querySelector("i").className = social.iconClass;
+                clone.querySelector('[data-field="link"]').href = social.url;
+                clone.querySelector('[data-field="icon"]').className = social.iconClass;
 
                 container.appendChild(clone);
             });
@@ -61,6 +62,7 @@ function renderSocials(container) {
         .catch(error => console.error("Error loading social icons:", error));
 }
 
+// RELEASES
 document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="releases"]').forEach(container => {
         renderReleases(container);
@@ -84,11 +86,13 @@ function renderReleases(container) {
 
             releases.forEach(release => {
                 const clone = template.content.cloneNode(true);
-                clone.querySelector("img").src = release.cover;
-                clone.querySelector("p.release-card-type").textContent = release.type;
-                clone.querySelector("h3.release-card-title").textContent = release.title;
-                clone.querySelector("p.release-card-year").textContent = release.year;
-                clone.querySelector("a").href = release.url;
+                const cover = clone.querySelector('[data-field="cover"]');
+                cover.src = release.cover;
+                cover.alt = `${release.title} cover art`;
+                clone.querySelector('[data-field="type"]').textContent = release.type;
+                clone.querySelector('[data-field="title"]').textContent = release.title;
+                clone.querySelector('[data-field="year"]').textContent = release.year;
+                clone.querySelector('[data-field="link"]').href = release.url;
 
                 container.appendChild(clone);
             });
@@ -96,6 +100,7 @@ function renderReleases(container) {
         .catch(error => console.error("Error loading release cards:", error));
 }
 
+// FEATURED RELEASE
 document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="featured-release"]').forEach(container => {
         renderFeaturedRelease(container);
@@ -110,18 +115,19 @@ function renderFeaturedRelease(container) {
             const release = data.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))[0];
 
             const clone = template.content.cloneNode(true);
-            const img = clone.querySelector("img");
-            img.src = release.cover;
-            img.alt = `${release.title} cover art`;
-            clone.querySelector("p.eyebrow").textContent = release.year;
-            clone.querySelector("h3").textContent = release.title;
-            clone.querySelector("a").href = release.url;
+            const cover = clone.querySelector('[data-field="cover"]');
+            cover.src = release.cover;
+            cover.alt = `${release.title} cover art`;
+            clone.querySelector('[data-field="year"]').textContent = release.year;
+            clone.querySelector('[data-field="title"]').textContent = release.title;
+            clone.querySelector('[data-field="link"]').href = release.url;
 
             container.appendChild(clone);
         })
         .catch(error => console.error("Error loading featured release:", error));
 }
 
+// TOUR DATES
 document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="tour-dates"]').forEach(container => {
         renderTourDates(container);
@@ -150,12 +156,12 @@ function renderTourDates(container) {
 
             tourdates.forEach(tourdate => {
                 const clone = template.content.cloneNode(true);
-                clone.querySelector("h3").textContent = tourdate.title;
-                clone.querySelector("p.tour-date-date").textContent = tourdate.date;
-                clone.querySelector("p.tour-date-location").textContent = tourdate.location;
+                clone.querySelector('[data-field="title"]').textContent = tourdate.title;
+                clone.querySelector('[data-field="date"]').textContent = tourdate.date;
+                clone.querySelector('[data-field="location"]').textContent = tourdate.location;
 
-                var link = clone.querySelector("a");
-                if(tourdate.url)
+                const link = clone.querySelector('[data-field="link"]');
+                if (tourdate.url)
                     link.href = tourdate.url;
                 else
                     link.remove();

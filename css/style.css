@@ -29,8 +29,22 @@
     --transition: 0.3s ease;
 }
 
+.pad-xs { padding: var(--space-xs); }
+.pad-sm { padding: var(--space-sm); }
+.pad-md { padding: var(--space-md); }
+.pad-lg { padding: var(--space-lg); }
+.pad-xl { padding: var(--space-xl); }
+
+.gap-xs { gap: var(--space-xs); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+
+.muted { opacity: 0.6; }
+
 /* =============================================================
-   RESET & BASE TYPOGRAPHY
+   RESET
 ============================================================= */
 
 * {
@@ -51,26 +65,52 @@ body {
     font-weight: var(--weight-regular);
 }
 
-/* Pushes the footer to the bottom of the viewport on short pages
-   (tour/bio/music) while still flowing normally on tall ones (index,
-   which has its own 100vh hero). The header/templates wrapper divs
-   collapse to ~0 height since .site-header is position: fixed. */
 main {
     flex: 1 0 auto;
 }
 
-h1, h2, h3 {
+/* =============================================================
+   BASE TYPOGRAPHY
+============================================================= */
+
+h1 { 
     font-family: var(--font-display);
-}
-
-h3 {
-    font-size: 2.5rem;
     font-weight: var(--weight-semibold);
+    font-size: clamp(3rem, 8vw, 6rem); 
+    margin-bottom: var(--space-md);
+}
+h2 { 
+    font-family: var(--font-display);
+    font-weight: var(--weight-semibold);
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    margin-bottom: var(--space-sm);
+}
+h3 { 
+    font-family: var(--font-display);
+    font-weight: var(--weight-semibold);
+    font-size: clamp(1.5rem, 3vw, 2rem); 
 }
 
-p, a, button, input {
-    font-family: var(--font-body);
+p, a, button, input { font-family: var(--font-body); }
+
+a {
+    color: var(--text-light);
+    text-decoration: none;
 }
+
+p {
+    margin-top: var(--space-xs);
+    font-size: 1rem;
+    font-weight: var(--weight-light);
+}
+
+.lead {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+}
+
+/* =============================================================
+THEMES
+============================================================= */
 
 .theme-dark {
     background: var(--background-dark);
@@ -91,22 +131,6 @@ p, a, button, input {
     transform: translateY(-50px) !important;
     opacity: 0;
     pointer-events: none;
-}
-
-.horizontal-list {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs)
-}
-
-@media (max-width: 700px) {
-    h2 {
-        font-size: 2.5rem;
-    }
-
-    h3 {
-        font-size: 2rem;
-    }
 }
 
 /* =============================================================
@@ -149,83 +173,15 @@ p, a, button, input {
     padding: var(--space-lg) 20px;
 }
 
-.section-heading {
-    width: 100%;
-    text-align: left;
-    padding: 0px var(--space-xl);
-}
-
-.section-heading h2 {
-    font-size: 6rem;
-    font-weight: var(--weight-semibold);
-}
-
-.section-heading p {
-    margin-top: var(--space-xs);
-    font-size: 1rem;
-    font-weight: var(--weight-light);
-    opacity: .85;
-}
-
-p {
-    margin-top: var(--space-xs);
-    font-size: 1rem;
-    font-weight: var(--weight-light);
-}
-
-@media (max-width: 700px) {
-    .section-heading h2 {
-        font-size: 2.5rem;
-    }
-
-    h3 {
-        font-size: 2rem;
-    }
-}
-
-/* =============================================================
-   PAGE CONTENT WRAPPER (bio / tour / music, etc.)
-============================================================= */
-
-.page-content {
-    max-width: 800px;
-    margin: auto;
-    padding: var(--space-xl) 40px;
-}
-
-.page-content--wide {
-    max-width: 1100px;
-}
-
-.page-title {
-    font-size: 5rem;
-    margin-bottom: var(--space-md);
-}
-
-@media (max-width: 700px) {
-    .page-content {
-        padding: 100px 20px;
-    }
-
-    .page-title {
-        font-size: 3.2rem;
-    }
-}
-
 /* =============================================================
    PAGE HERO (eyebrow + title, used above bio/tour intros)
 ============================================================= */
 
 .eyebrow {
     text-transform: uppercase;
+    font-family: var(--font-display);
     letter-spacing: 3px;
-    font-size: .75rem;
-    font-weight: var(--weight-medium);
     color: var(--secondary);
-}
-
-.page-hero h1 {
-    margin-top: var(--space-xs);
 }
 
 /* =============================================================
@@ -252,11 +208,11 @@ p {
 }
 
 .theme-dark .site-header.solid {
-    background: var(--background-dark);
+    background: linear-gradient(var(--background-dark), var(--background-dark), transparent) ;
 }
  
 .theme-light .site-header.solid {
-    background: var(--background-light);
+    background: linear-gradient(var(--background-light), var(--background-light), transparent) ;
 }
 
 .header-logo {
@@ -276,11 +232,6 @@ p {
 
 .footer {
     width: 100%;
-    padding: var(--space-md);
-    display: grid;
-    gap: var(--space-sm);
-    justify-content: center;
-    align-items: center;
     z-index: 100;
     background: var(--shadow);
 }
@@ -304,14 +255,6 @@ p {
 .main-nav a.active {
     border-bottom: 1px solid var(--secondary);
     padding-bottom: 5px;
-}
-
-.site-header .socials{
-    justify-self: end;
-}
-
-.footer .socials{
-    justify-self: center;
 }
 
 .socials {
@@ -425,26 +368,6 @@ p {
     animation: heroFade 2s ease forwards;
 }
 
-.content h1 {
-    font-size: clamp(3.5rem, 8vw, 6rem);
-    font-weight: var(--weight-semibold);
-    letter-spacing: 2px;
-}
-
-.content h2 {
-    margin-top: var(--space-xs);
-    font-size: 1.2rem;
-    font-weight: var(--weight-light);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-.content p {
-    margin-top: var(--space-md);
-    font-size: 1.3rem;
-    font-weight: var(--weight-light);
-}
-
 @keyframes heroFade {
     from {
         opacity: 0;
@@ -453,13 +376,6 @@ p {
     to {
         opacity: 1;
         transform: translate(0px, 0px);
-    }
-}
-
-@media (max-width: 700px) {
-
-    .content h1 {
-        font-size: 3.5rem;
     }
 }
 
@@ -477,21 +393,6 @@ p {
     align-items: center;
     text-align: center;
     background: var(--shadow);
-}
-
-.links-card h1 {
-    margin-top: var(--space-sm);
-    font-size: 2.2rem;
-    letter-spacing: 1px;
-}
-
-.links-card h2 {
-    margin-top: var(--space-xs);
-    margin-bottom: var(--space-xs);
-    font-size: .75rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-weight: var(--weight-bold);
 }
 
 .link-btn {
@@ -607,200 +508,13 @@ p {
 }
 
 /* =============================================================
-   BIO PAGE
-============================================================= */
-
-.bio-tagline {
-    margin-top: var(--space-md);
-    padding-left: 28px;
-    position: relative;
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1.5rem;
-    color: var(--secondary);
-}
-
-.bio-tagline::before {
-    content: '\201C';
-    position: absolute;
-    left: 0;
-    top: -.15em;
-    font-size: 1.8rem;
-    color: var(--secondary);
-    opacity: .6;
-}
-
-.bio-body {
-    margin-top: var(--space-lg);
-    display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    gap: 60px;
-    align-items: start;
-}
-
-.bio-text p {
-    font-size: 1.05rem;
-    line-height: 1.9;
-    font-weight: var(--weight-light);
-}
-
-.bio-text p + p {
-    margin-top: var(--space-sm);
-}
-
-.bio-influences {
-    border-left: 1px solid var(--secondary);
-    padding-left: 28px;
-}
-
-.influences-label {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: .75rem;
-    font-weight: var(--weight-medium);
-    color: var(--secondary);
-}
-
-.influence-tags {
-    list-style: none;
-    margin-top: var(--space-xs);
-}
-
-.influence-tags li {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    padding: 6px 0;
-}
-
-.influences-note {
-    margin-top: var(--space-xs);
-    font-size: .85rem;
-    font-weight: var(--weight-light);
-    opacity: .75;
-}
-
-.bio-cta {
-    margin-top: var(--space-xl);
-    padding-top: var(--space-lg);
-    border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
-    text-align: center;
-}
-
-.bio-cta p {
-    font-size: 1.1rem;
-    font-weight: var(--weight-light);
-}
-
-@media (max-width: 700px) {
-    .bio-body {
-        grid-template-columns: 1fr;
-        gap: var(--space-md);
-    }
-
-    .bio-influences {
-        border-left: none;
-        border-top: 1px solid var(--secondary);
-        padding-left: 0;
-        padding-top: var(--space-sm);
-    }
-}
-
-/* =============================================================
-   TOUR PAGE
-============================================================= */
-
-.tour-empty {
-    margin-top: var(--space-xl);
-    text-align: center;
-}
-
-.spotlight {
-    width: 220px;
-    height: 220px;
-    margin: 0 auto var(--space-md);
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(230,201,138,.32) 0%, rgba(230,201,138,.08) 55%, transparent 75%);
-    animation: spotlightPulse 5s ease-in-out infinite;
-}
-
-@keyframes spotlightPulse {
-    0%, 100% { opacity: .55; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.08); }
-}
-
-.tour-empty-text {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    font-weight: var(--weight-medium);
-}
-
-.tour-empty-sub {
-    margin-top: var(--space-xs);
-    font-size: 1rem;
-    font-weight: var(--weight-light);
-    opacity: .8;
-}
-
-/* Future dates table (for use once .tour-empty is removed) */
-
-.tour-list {
-    margin-top: var(--space-lg);
-    text-align: left;
-}
-
-.tour-list table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.tour-list th {
-    text-align: left;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: .7rem;
-    font-weight: var(--weight-medium);
-    color: var(--secondary);
-    padding: 12px 10px;
-    border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent);
-}
-
-.tour-list td {
-    padding: 18px 10px;
-    border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-    font-weight: var(--weight-light);
-}
-
-.tour-list td .spotify-button {
-    margin-top: 0;
-    padding: 8px 18px;
-    font-size: .8rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .spotlight {
-        animation: none;
-    }
-}
-
-@media (max-width: 700px) {
-    .tour-empty-text {
-        font-size: 1.5rem;
-    }
-
-    .tour-list th:nth-child(3),
-    .tour-list td:nth-child(3) {
-        display: none;
-    }
-}
-
-/* =============================================================
    GRIDS
 ============================================================= */
 
 .grid {
     display: grid;
     padding: var(--space-lg);
-    gap: 40px;
+    gap: var(--space-md);
 }
 
 .grid--auto {
@@ -811,142 +525,69 @@ p {
 }
 
 /* =============================================================
-   RELEASE CARDS
+   CARDS
 ============================================================= */
-
-.featured-release {
-    padding: var(--space-lg);
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 60px;
-    align-items: center;
-    text-align: left;
-}
-
-.featured-release-image img {
-    width: 100%;
-    max-width: 400px;
-}
-
-@media (max-width: 700px) {
-    .featured-release {
-        grid-template-columns: 1fr;
-    }
-}
 
 .card {
     background: color-mix(in srgb, currentColor 5%, transparent);
     border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
     transition: transform var(--transition), border-color var(--transition);
+    cursor: pointer;
 }
 
 .card:hover {
-    transform: translateY(-30px) scale(110%);
+    transform: translateY(-10px) scale(110%);
     transition: var(--transition);
     border-color: var(--secondary);
 }
 
-.release-card {
-    display: flex;
-    flex-direction: column;
-    color: inherit;
-    text-decoration: none;
-}
+/* =============================================================
+   IMAGES
+============================================================= */
 
-.release-card img {
-    width: 100%;
+.cover-img {
+    width: clamp(200px, 100%, 400px);
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
 }
 
-.release-card-body {
-    padding: 18px;
+.icon-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
 }
 
-.release-card-type {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: .65rem;
+/* =============================================================
+   LAYOUT
+============================================================= */
+
+.stack {
+    display: flex;
+    flex-direction: column;
 }
 
-.theme-dark .release-card-type {
-    color: var(--secondary);
+.row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
-.theme-light .release-card-type {
-    color: var(--primary);
-}
-
-.release-card-title {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    margin-top: 4px;
-}
-
-.release-card-year {
-    font-size: .8rem;
-    opacity: .6;
-    margin-top: 4px;
+.center {
+    align-items: center;
+    text-align: center;
 }
 
 /* =============================================================
    HOMEPAGE TOUR DATES (rendered via data-render="tour-dates")
 ============================================================= */
 
-[data-render="tour-dates"] {
+/*[data-render="tour-dates"] {
     width: 100%;
     max-width: 700px;
     margin: var(--space-md) auto 0;
     text-align: left;
-}
-
-.tour-date-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 22px 10px;
-    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-    transition: var(--transition);
-}
-
-/*.tour-date-row:hover {
-    cursor: pointer;
-    transform: scale(110%);
-    transition: var(--transition);
-    background-color: var(--shadow);
 }*/
-
-.tour-date-row:last-child {
-    border-bottom: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-}
-
-.tour-date-date {
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: .75rem;
-    font-weight: var(--weight-medium);
-    color: var(--secondary);
-    margin-top: 0;
-}
-
-.tour-date-title {
-    margin-top: 4px;
-    font-size: 1.6rem;
-}
-
-.tour-date-button {
-    margin-top: 0;
-    padding: 12px 26px;
-    font-size: .8rem;
-    flex-shrink: 0;
-}
-
-@media (max-width: 700px) {
-    .tour-date-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-}

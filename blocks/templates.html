@@ -1,47 +1,45 @@
 <!-- Social Icon Template -->
 <template id="social-icon-template">
-    <a href="#" target="_blank">
-        <i class="fa-brands"></i>
+    <a href="#" target="_blank" data-field="link">
+        <i class="fa-brands" data-field="icon"></i>
     </a>
 </template>
 
 <!-- Release Card Template -->
 <template id="release-card-template">
-    <a class="card release-card" href="#" target="_blank">
-        <img src="" alt="">
-        <div class="release-card-body">
-            <p class="release-card-type"></p>
-            <h3 class="release-card-title"></h3>
-            <p class="release-card-year"></p>
+    <a class="card stack" href="#" target="_blank" data-field="link">
+        <img class="cover-img" src="" alt="" data-field="cover">
+        <div class="stack gap-xs pad-sm">
+            <p class="eyebrow" data-field="type"></p>
+            <p data-field="title"></p>
+            <p class="muted" data-field="year"></p>
         </div>
     </a>
 </template>
 
 <!-- Featured Release Template -->
 <template id="featured-release-template">
-    <section class="featured-release">
-        <div class="featured-release-image">
-            <img src="" alt="">
+    <div class="row gap-md">
+        <img class="cover-img" src="" alt="" data-field="cover">
+        <div class="stack gap-sm">
+            <p class="eyebrow" data-field="year"></p>
+            <h3 data-field="title"></h3>
+            <a class="button" href="#" target="_blank" data-field="link">Listen</a>
         </div>
-        <div class="featured-release-info">
-            <p class="eyebrow"></p>
-            <h3></h3>
-            <a class="button" href="#" target="_blank">Listen</a>
-        </div>
-    </section>
+    </div>
 </template>
 
 <!-- Tour Date Template -->
 <template id="tour-date-template">
-    <div class="tour-date-row">
-        <div class="tour-date-info">
-            <p class="tour-date-date"></p>
-            <div class="horizontal-list">
-                <h3 class="tour-date-title"></h3>
+    <div class="card row gap-sm pad-sm">
+        <div class="stack gap-xs">
+            <p class="eyebrow" data-field="date"></p>
+            <div class="row gap-xs">
+                <h3 data-field="title"></h3>
                 <p>|</p>
-                <p class="tour-date-location"></p>
+                <p data-field="location"></p>
             </div>
         </div>
-        <a class="button tour-date-button" href="#" target="_blank">More info</a>
+        <a class="button" href="#" target="_blank" data-field="link">More info</a>
     </div>
 </template>
