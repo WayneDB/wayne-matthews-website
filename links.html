@@ -17,32 +17,45 @@
     <div data-component="templates"></div>
 
     <main>
-        <section class="hero">
+        <div class="hero">
             <div class="overlay"></div>
             <div class="hero-content links-card">
-                <h2>Wayne Matthews</h2>
-                <p class="eyebrow">Singer • Songwriter</p>
-                <a href="https://open.spotify.com/playlist/37i9dQZF1DZ06evO2XtMYP?si=yRYhrp-YRkyFDcoC-HJgkQ" target="_blank" rel="noopener noreferrer" class="link-btn featured">
+
+                <div>
+                    <h2>Wayne Matthews</h2>
+                    <p class="eyebrow">Singer • Songwriter</p>
+                </div>
+
+                <div class="space-xs"></div>
+                <div class="divider"></div>
+                <div class="space-md"></div>
+
+                <div class="stack gap-sm">
+                    <a href="https://open.spotify.com/playlist/37i9dQZF1DZ06evO2XtMYP?si=yRYhrp-YRkyFDcoC-HJgkQ" target="_blank" rel="noopener noreferrer" class="link-btn featured">
                     <span class="link-btn-text">
                         <span class="link-btn-eyebrow">Full playlist</span>
                         <span class="link-btn-label">Listen on Spotify</span>
                     </span>
                     <i class="fa-solid fa-arrow-right"></i>
-                </a>
-                <button id="subscribebutton" class="link-btn">
-                    <span class="link-btn-text">
-                        <span class="link-btn-eyebrow">Join the mailing list</span>
-                        <span class="link-btn-label">Get a free unreleased demo</span>
-                    </span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-                
-                <div class="links-divider">Follow on socials</div>
-                <section class="socials" data-render="socials" style="margin-top: 30px; vertical-align: bottom;"></section>
+                    </a>
+                    <div id="subscribebutton" class="link-btn">
+                        <span class="link-btn-text">
+                            <span class="link-btn-eyebrow">Join the mailing list</span>
+                            <span class="link-btn-label">Get a free unreleased demo</span>
+                        </span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
 
-                <a href="index.html" class="site-link">wayne-matthews.com</a>
+                <div class="space-lg"></div>
+
+                <div class="stack gap-sm">
+                    <div class="divider">Follow on socials</div>
+                    <div class="socials" data-render="socials"></div>
+                    <a href="index.html" class="site-link">wayne-matthews.com</a>
+                </div>
             </div>
-        </section>
+        </div>
     </main>
 
 <script src="scripts/script.js"></script>

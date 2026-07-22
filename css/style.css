@@ -26,7 +26,7 @@
     --space-xl: 120px;
 
     --shadow: rgba(0,0,0,0.45);
-    --transition: 0.3s ease;
+    --transition: 0.2s ease;
 }
 
 .pad-xs { padding: var(--space-xs); }
@@ -40,6 +40,13 @@
 .gap-md { gap: var(--space-md); }
 .gap-lg { gap: var(--space-lg); }
 .gap-xl { gap: var(--space-xl); }
+
+.space-xs { width: var(--space-xs); height: var(--space-xs); }
+.space-sm { width: var(--space-sm); height: var(--space-sm); }
+.space-md { width: var(--space-md); height: var(--space-md); }
+.space-lg { width: var(--space-lg); height: var(--space-lg); }
+.space-xl { width: var(--space-xl); height: var(--space-xl); }
+.space-flex { display: flex; flex-direction: column; flex:1; width: clamp(var(--space-xs), 100%, var(--space-xl)); height: clamp(var(--space-xs), 100%, var(--space-xl)); }
 
 .muted { opacity: 0.6; }
 
@@ -70,6 +77,55 @@ main {
 }
 
 /* =============================================================
+   LAYOUT
+============================================================= */
+
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: clamp(var(--space-sm), 10%, var(--space-xl))
+}
+
+section h1 {
+    align-self: flex-start;
+    text-align: left;
+    margin-bottom: var(--space-lg);
+}
+
+
+.grid {
+    display: grid;
+    gap: var(--space-md);
+}
+
+.grid--auto {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+.stack {
+    width: 100%;
+    flex: content;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =============================================================
    BASE TYPOGRAPHY
 ============================================================= */
 
@@ -77,13 +133,11 @@ h1 {
     font-family: var(--font-display);
     font-weight: var(--weight-semibold);
     font-size: clamp(3rem, 8vw, 6rem); 
-    margin-bottom: var(--space-md);
 }
 h2 { 
     font-family: var(--font-display);
     font-weight: var(--weight-semibold);
     font-size: clamp(2rem, 5vw, 2.5rem);
-    margin-bottom: var(--space-sm);
 }
 h3 { 
     font-family: var(--font-display);
@@ -91,7 +145,7 @@ h3 {
     font-size: clamp(1.5rem, 3vw, 2rem); 
 }
 
-p, a, button, input { font-family: var(--font-body); }
+p, a, input { font-family: var(--font-body); }
 
 a {
     color: var(--text-light);
@@ -108,6 +162,13 @@ p {
     font-size: clamp(1rem, 2vw, 1.3rem);
 }
 
+.eyebrow  {
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    letter-spacing: 3px;
+    color: var(--secondary);
+}
+
 /* =============================================================
 THEMES
 ============================================================= */
@@ -117,10 +178,71 @@ THEMES
     color: var(--text-light);
 }
 
-.theme-light {
-    background: var(--background-light);
+/* =============================================================
+   BUTTONS
+============================================================= */
+
+button {
+    width: 200px;
+    margin: var(--space-sm);
+    padding: var(--space-sm);
+    background: var(--primary);
+    color: var(--text-light);
+    border: none !important;
+    border-radius: 0 !important;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+    transition: transform var(--transition), border-color var(--transition);
+}
+
+button:hover {
+    transform: translateY(-5px) scale(110%);
+    transition: var(--transition);
+    background: var(--secondary);
     color: var(--text-dark);
 }
+
+.card {
+    background: var(--background-dark);
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    transition: transform var(--transition), border-color var(--transition), filter var(--transition);
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(110%);
+    transition: var(--transition);
+    border-color: var(--secondary);
+    filter: drop-shadow(5px 5px 10px var(--shadow));
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+/* =============================================================
+   IMAGES
+============================================================= */
+
+.cover-img {
+    width: clamp(200px, 100%, 400px);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.icon-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
+}
+
+/* =============================================================
+   ANIMATIONS
+============================================================= */
 
 .hide-on-scroll {
     transition: transform 0.4s ease, opacity 0.4s ease;
@@ -134,61 +256,10 @@ THEMES
 }
 
 /* =============================================================
-   BUTTONS
+   HEADER & FOOTER
 ============================================================= */
 
-.button {
-    display: inline-block;
-    margin-top: var(--space-sm);
-    padding: 15px 30px;
-    background: var(--primary);
-    color: var(--text-light);
-    text-decoration: none;
-    flex: 0 0 auto;
-    width: auto !important;
-    border: none !important;
-    border-radius: 0 !important;
-    font-family: var(--font-body);
-    font-weight: var(--weight-medium);
-    cursor: pointer;
-    transition: background var(--transition), color var(--transition);
-}
-
-.button:hover {
-    background: var(--secondary);
-    color: var(--text-dark);
-}
-
-/* =============================================================
-   SECTIONS (generic full-width blocks, e.g. mailing-list CTAs)
-   Usage: <section class="section section-dark"> ... </section>
-============================================================= */
-
-.section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: var(--space-lg) 20px;
-}
-
-/* =============================================================
-   PAGE HERO (eyebrow + title, used above bio/tour intros)
-============================================================= */
-
-.eyebrow {
-    text-transform: uppercase;
-    font-family: var(--font-display);
-    letter-spacing: 3px;
-    color: var(--secondary);
-}
-
-/* =============================================================
-   HEADER
-============================================================= */
-
-.site-header {
+header {
     position: fixed;
     top: 0;
     left: 0;
@@ -203,16 +274,12 @@ THEMES
     transition: background var(--transition);
 }
 
-.site-header .socials {
+header .socials {
     justify-self: end;
 }
 
-.theme-dark .site-header.solid {
+.theme-dark header.solid {
     background: linear-gradient(var(--background-dark), var(--background-dark), transparent) ;
-}
- 
-.theme-light .site-header.solid {
-    background: linear-gradient(var(--background-light), var(--background-light), transparent) ;
 }
 
 .header-logo {
@@ -230,10 +297,9 @@ THEMES
     transition: color var(--transition);
 }
 
-.footer {
+footer {
     width: 100%;
     z-index: 100;
-    background: var(--shadow);
 }
 
 .main-nav {
@@ -270,7 +336,6 @@ THEMES
     transition: color var(--transition), transform var(--transition);
 }
 
-/* Default hover (used by both header and footer, on the dark theme) */
 .header-logo a:hover,
 .main-nav a:hover,
 .socials a:hover {
@@ -281,29 +346,8 @@ THEMES
     transform: translateY(-3px) scale(150%);
 }
 
-/* Light-theme override is scoped to the header only. The footer keeps
-   its dark translucent bar (var(--shadow)) on every page, so its icons
-   must stay var(--text-light) regardless of the page's theme class —
-   this used to leak and make footer icons unreadable on light pages. */
-.theme-light .site-header {
-    background: var(--background-light);
-}
-
-.theme-light .site-header .header-logo a,
-.theme-light .site-header .main-nav a,
-.theme-light .site-header .socials a {
-    color: var(--primary);
-    text-shadow: none;
-}
-
-.theme-light .site-header .header-logo a:hover,
-.theme-light .site-header .main-nav a:hover,
-.theme-light .site-header .socials a:hover {
-    color: var(--background-dark);
-}
-
 @media (max-width: 700px) {
-    .site-header {
+    header {
         height: 70px;
         padding: 0 20px;
     }
@@ -320,7 +364,7 @@ THEMES
         font-size: .65rem;
     }
 
-    .site-header .socials {
+    header .socials {
         gap: 12px;
     }
 }
@@ -386,18 +430,18 @@ THEMES
 .links-card {
     width: 100%;
     max-width: 420px;
-    min-height: 420px;
-    padding: var(--space-md) 20px;
+    padding: var(--space-sm);
+    margin: var(--space-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     background: var(--shadow);
+    justify-content: space-between;
 }
 
 .link-btn {
     width: 100%;
-    margin-top: var(--space-sm);
     padding: 16px 22px;
     display: flex;
     align-items: center;
@@ -406,21 +450,9 @@ THEMES
     border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
     color: var(--text-light);
     text-decoration: none;
-    font-size: .95rem;
-    font-weight: var(--weight-medium);
     transition: background var(--transition), border-color var(--transition), transform var(--transition);
     justify-content: space-between;
     cursor: pointer;
-}
-
-.links-card > .link-btn:first-child {
-    margin-top:var(--space-lg);
-}
-
-.link-btn i {
-    font-size: 1.15rem;
-    width: 20px;
-    flex-shrink: 0;
 }
 
 .link-btn:hover {
@@ -468,7 +500,7 @@ THEMES
     font-weight: var(--weight-semibold);
 }
 
-.links-divider {
+.divider {
     width: 100%;
     display: flex;
     align-items: center;
@@ -477,24 +509,22 @@ THEMES
     letter-spacing: 2px;
     font-size: .7rem;
     font-weight: var(--weight-medium);
-    margin-top: var(--space-md);
 }
 
-.links-divider::before,
-.links-divider::after {
+.divider::before,
+.divider::after {
     content: '';
     flex: 1;
     height: 1px;
     background: color-mix(in srgb, currentColor 20%, transparent);
 }
 
-.links-divider span {
+.divider span {
     padding: 0 14px;
     white-space: nowrap;
 }
 
 .site-link {
-    margin-top: var(--space-sm);
     font-size: .75rem;
     letter-spacing: 1px;
     color: var(--text-light);
@@ -506,88 +536,3 @@ THEMES
 .site-link:hover {
     opacity: .9;
 }
-
-/* =============================================================
-   GRIDS
-============================================================= */
-
-.grid {
-    display: grid;
-    padding: var(--space-lg);
-    gap: var(--space-md);
-}
-
-.grid--auto {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
-    width: 100%;
-    margin: 0 auto;
-    justify-content: center;
-}
-
-/* =============================================================
-   CARDS
-============================================================= */
-
-.card {
-    background: color-mix(in srgb, currentColor 5%, transparent);
-    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
-    transition: transform var(--transition), border-color var(--transition);
-    cursor: pointer;
-}
-
-.card:hover {
-    transform: translateY(-10px) scale(110%);
-    transition: var(--transition);
-    border-color: var(--secondary);
-}
-
-/* =============================================================
-   IMAGES
-============================================================= */
-
-.cover-img {
-    width: clamp(200px, 100%, 400px);
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
-}
-
-.icon-img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    display: block;
-}
-
-/* =============================================================
-   LAYOUT
-============================================================= */
-
-.stack {
-    display: flex;
-    flex-direction: column;
-}
-
-.row {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-}
-
-.center {
-    align-items: center;
-    text-align: center;
-}
-
-/* =============================================================
-   HOMEPAGE TOUR DATES (rendered via data-render="tour-dates")
-============================================================= */
-
-/*[data-render="tour-dates"] {
-    width: 100%;
-    max-width: 700px;
-    margin: var(--space-md) auto 0;
-    text-align: left;
-}*/

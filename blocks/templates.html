@@ -24,14 +24,16 @@
         <div class="stack gap-sm">
             <p class="eyebrow" data-field="year"></p>
             <h3 data-field="title"></h3>
-            <a class="button" href="#" target="_blank" data-field="link">Listen</a>
+                <a href="#" target="_blank" data-field="link">
+                    <button>Listen</button>
+                </a>
         </div>
     </div>
 </template>
 
 <!-- Tour Date Template -->
 <template id="tour-date-template">
-    <div class="card row gap-sm pad-sm">
+    <a class="card row gap-sm pad-sm" href="#" target="_blank" data-field="link">
         <div class="stack gap-xs">
             <p class="eyebrow" data-field="date"></p>
             <div class="row gap-xs">
@@ -40,6 +42,5 @@
                 <p data-field="location"></p>
             </div>
         </div>
-        <a class="button" href="#" target="_blank" data-field="link">More info</a>
-    </div>
+    </a>
 </template>

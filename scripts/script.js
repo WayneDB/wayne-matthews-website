@@ -138,11 +138,6 @@ function renderTourDates(container) {
     fetch("data/tourdates.json")
         .then(response => response.json())
         .then(data => {
-            if (!data.length) {
-                container.closest("section")?.remove();
-                return;
-            }
-
             const template = document.getElementById("tour-date-template");
 
             let tourdates = [...data].sort(
@@ -164,7 +159,7 @@ function renderTourDates(container) {
                 if (tourdate.url)
                     link.href = tourdate.url;
                 else
-                    link.remove();
+                    link.classList.add("disabled");
 
                 container.appendChild(clone);
             });
@@ -226,7 +221,7 @@ window.addEventListener("scroll", () => {
         show();
     } else if (currentScrollY > lastScrollY) {
         hide(); // scrolling down
-    } else {
+    } else if(currentScrollY < lastScrollY - 5) {
         show(); // scrolling up
     }
 
