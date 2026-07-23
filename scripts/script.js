@@ -142,25 +142,35 @@ function renderReleases(container) {
                 nextBtn?.classList.toggle("hide", page >= lastPage(itemsPerPage));
             };
 
+            let isAnimating = false;
+            let pendingPage = null;
+
             const goToPage = (newPage) => {
                 if (newPage === page) return;
-                page = newPage;
-
+                pendingPage = newPage;
+                if (isAnimating) return;
+                
+                isAnimating = true;
                 container.classList.add("hide");
                 container.addEventListener("transitionend", function swap() {
                     container.removeEventListener("transitionend", swap);
+                    page = pendingPage;
+                    pendingPage = null;
                     fillPage();
                     container.classList.remove("hide");
+                    isAnimating = false;
                 }, { once: true });
             };
 
             fillPage();
 
             prevBtn?.addEventListener("click", () => {
-                if (page > 0) goToPage(page - 1);
+                const current = pendingPage ?? page;
+                if (current > 0) goToPage(current - 1);
             });
             nextBtn?.addEventListener("click", () => {
-                if (page < lastPage(itemsPerPage)) goToPage(page + 1);
+                const current = pendingPage ?? page;
+                if (current < lastPage(itemsPerPage)) goToPage(current + 1);
             });
 
             let resizeTimeout;
