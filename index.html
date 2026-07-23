@@ -56,7 +56,19 @@
         <div class="divider"></div>
         <section id="music">
             <h1>Music</h1>
-            <div class="grid grid--auto" data-render="releases" data-limit="5"></div>
+            <div class="row gap-md carousel" data-carousel>
+            
+                <button class="icon-button carousel-prev" aria-label="Previous releases">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            
+                <div class="grid" data-render="releases" data-limit="5"></div>
+                
+                <button class="icon-button carousel-next" aria-label="Next releases">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>   
+            
+            </div>
         </section>
 
         <div class="divider"></div>
@@ -68,7 +80,7 @@
         <div class="divider"></div>
         <section id="tour">
             <h1>Tour Dates</h1>
-            <div data-render="tour-dates" data-limit="5">
+            <div data-render="tour-dates">
                 <div id="on-empty">
                     <p>There are currently no shows planned.</p>
                     <button id="subscribebutton">Notify me</button>

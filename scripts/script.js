@@ -97,17 +97,15 @@ function renderReleases(container) {
         .then(response => response.json())
         .then(data => {
             const template = document.getElementById("release-card-template");
-
-            let releases = [...data].sort(
+            const releases = [...data].sort(
                 (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
             );
 
-            const limit = container.dataset.limit;
-            if (limit) {
-                releases = releases.slice(0, Number(limit));
-            }
+            const carousel = container.closest("[data-carousel]");
+            const prevBtn = carousel?.querySelector(".carousel-prev");
+            const nextBtn = carousel?.querySelector(".carousel-next");
 
-            releases.forEach(release => {
+            const renderCard = (release) => {
                 const clone = template.content.cloneNode(true);
                 const cover = clone.querySelector('[data-field="cover"]');
                 cover.src = release.cover;
@@ -116,8 +114,66 @@ function renderReleases(container) {
                 clone.querySelector('[data-field="title"]').textContent = release.title;
                 clone.querySelector('[data-field="year"]').textContent = release.year;
                 clone.querySelector('[data-field="link"]').href = release.url;
+                return clone;
+            };
 
-                container.appendChild(clone);
+            // Fill the row with every release so CSS auto-fit reports
+            // every column it's actually able to create at this width.
+            const countColumns = () => {
+                container.innerHTML = "";
+                releases.forEach(release => container.appendChild(renderCard(release)));
+                const columns = getComputedStyle(container).gridTemplateColumns.split(" ").length;
+                return Math.max(1, columns);
+            };
+
+            const lastPage = (perPage) => Math.max(0, Math.ceil(releases.length / perPage) - 1);
+
+            let itemsPerPage = countColumns();
+            let page = 0;
+
+            const fillPage = () => {
+                container.innerHTML = "";
+                const start = page * itemsPerPage;
+                releases.slice(start, start + itemsPerPage).forEach(release => {
+                    container.appendChild(renderCard(release));
+                });
+
+                prevBtn?.classList.toggle("hide", page === 0);
+                nextBtn?.classList.toggle("hide", page >= lastPage(itemsPerPage));
+            };
+
+            const goToPage = (newPage) => {
+                if (newPage === page) return;
+                page = newPage;
+
+                container.classList.add("hide");
+                container.addEventListener("transitionend", function swap() {
+                    container.removeEventListener("transitionend", swap);
+                    fillPage();
+                    container.classList.remove("hide");
+                }, { once: true });
+            };
+
+            fillPage();
+
+            prevBtn?.addEventListener("click", () => {
+                if (page > 0) goToPage(page - 1);
+            });
+            nextBtn?.addEventListener("click", () => {
+                if (page < lastPage(itemsPerPage)) goToPage(page + 1);
+            });
+
+            let resizeTimeout;
+            window.addEventListener("resize", () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    const newItemsPerPage = countColumns();
+                    if (newItemsPerPage !== itemsPerPage) {
+                        itemsPerPage = newItemsPerPage;
+                        page = 0; // old page index may no longer be valid at the new width
+                    }
+                    fillPage();
+                }, 150);
             });
         })
         .catch(error => console.error("Error loading release cards:", error));
@@ -269,7 +325,6 @@ window.addEventListener("scroll", () => {
     const hide = () => hideableElements.forEach(el => el.classList.add("is-hidden"));
 
     if (isNavigating) {
-        show(); // keep nav visible for the duration of the navigational scroll
         lastScrollY = currentScrollY;
         return;
     }

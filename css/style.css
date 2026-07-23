@@ -91,19 +91,6 @@ section h1 {
     margin-bottom: var(--space-lg);
 }
 
-
-.grid {
-    display: grid;
-    gap: var(--space-md);
-}
-
-.grid--auto {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
-    width: 100%;
-    margin: 0 auto;
-    justify-content: center;
-}
-
 .stack {
     width: 100%;
     flex: content;
@@ -125,6 +112,20 @@ section h1 {
     width: fit-content;
     max-width: 100%;
     margin-inline: auto;
+}
+
+.carousel {
+    flex-wrap: nowrap;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+    gap: var(--space-md);
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    transition: opacity var(--transition);
 }
 
 /* =============================================================
@@ -243,6 +244,12 @@ button:hover {
 
 .disabled {
     pointer-events: none;
+    opacity: 0.35;
+}
+
+.hide {
+    pointer-events: none;
+    opacity: 0;
 }
 
 /* =============================================================
