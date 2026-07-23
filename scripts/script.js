@@ -60,6 +60,31 @@ function renderSocials(container) {
         .catch(error => console.error("Error loading social icons:", error));
 }
 
+// VIDEOS
+document.addEventListener("partials:loaded", () => {
+    document.querySelectorAll('[data-render="featured-videos"]').forEach(container => {
+        renderVideos(container);
+    });
+});
+
+function renderVideos(container) {
+    fetch("data/videos.json")
+        .then(response => response.json())
+        .then(data => {
+            const template = document.getElementById("video-template");
+
+            data.forEach(video => {
+                const clone = template.content.cloneNode(true);
+                const embed = clone.querySelector('[data-field="embed"]');
+                embed.src = `https://www.youtube.com/embed/${video.videoId}`;
+                embed.title = video.title;
+
+                container.appendChild(clone);
+            });
+        })
+        .catch(error => console.error("Error loading release cards:", error));
+}
+
 // RELEASES
 document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="releases"]').forEach(container => {
@@ -208,6 +233,24 @@ if (heroImage) {
 ========================================================= */
 
 let lastScrollY = window.scrollY;
+let isNavigating = false;
+
+function suppressHideForNavigation() {
+    isNavigating = true;
+    lastScrollY = window.scrollY; // avoid a false "scrolled down" jump once resumed
+}
+
+// Any in-page anchor click (nav links, "skip to section", etc.)
+document.addEventListener("click", (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    if (link) {
+        suppressHideForNavigation();
+    }
+});
+
+// Covers back/forward navigation landing on a hash, and any
+// programmatic scrollIntoView() / location.hash changes too.
+window.addEventListener("hashchange", suppressHideForNavigation);
 
 window.addEventListener("scroll", () => {
     const currentScrollY = window.scrollY;
@@ -216,15 +259,27 @@ window.addEventListener("scroll", () => {
     const show = () => hideableElements.forEach(el => el.classList.remove("is-hidden"));
     const hide = () => hideableElements.forEach(el => el.classList.add("is-hidden"));
 
+    if (isNavigating) {
+        show(); // keep nav visible for the duration of the navigational scroll
+        lastScrollY = currentScrollY;
+        return;
+    }
+
     if (currentScrollY <= 0) {
         show();
-    } else if (currentScrollY > lastScrollY) {
+    } else if (currentScrollY > lastScrollY + 2) {
         hide(); // scrolling down
     } else if(currentScrollY < lastScrollY - 2) {
         show(); // scrolling up
     }
 
     lastScrollY = currentScrollY;
+});
+
+// scrollend fires once the browser-driven scroll (smooth or instant)
+// has actually finished, regardless of what triggered it.
+window.addEventListener("scrollend", () => {
+    isNavigating = false;
 });
  
 document.addEventListener("partials:loaded", () => {
