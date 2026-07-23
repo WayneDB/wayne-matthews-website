@@ -19,11 +19,16 @@
 <body class="theme-dark">
     <div data-component="templates"></div>
     <div data-component="header"></div>
+    <div class="herofade" style="position: absolute; transform: translateX(40px);">
+        <div class="socials" data-render="socials"></div>
+    </div>
 
     <main>
-        
-        <div class="hero">
-            <div class="overlay"></div>
+        <div class="hero" id="home">
+            <div class="hero-image"></div>
+            <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="images/background.jpg">
+                <source src="videos/background.mp4" type="video/mp4">
+            </video>
             <div class="hero-content" style="transform: translateY(100px);">
                 <div class="stack">
                     <h1 class="herofade" style="transform: translateY(40px);">Wayne Matthews</h1>
@@ -31,6 +36,7 @@
                     <p class="herofade lead" style="transform: translateY(70px);">New music. New stories. Coming soon.</p>
                 </div>
             </div>
+            <div class="overlay"></div>
         </div>
 
         <section>
@@ -46,13 +52,13 @@
         </section>
 
         <div class="divider"></div>
-        <section>
+        <section id="music">
             <h1>Music</h1>
             <div class="grid grid--auto" data-render="releases" data-limit="5"></div>
         </section>
 
         <div class="divider"></div>
-        <section>
+        <section id="tour">
             <h1>Tour Dates</h1>
             <div data-render="tour-dates" data-limit="5"></div>
         </section>

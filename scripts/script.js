@@ -34,8 +34,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 /* =========================================================
    DATA-DRIVEN RENDERING
-   Anything marked data-render="x" gets filled in once the
-   shared partials (and their <template> tags) are ready.
 ========================================================= */
 
 // SOCIALS
@@ -173,9 +171,10 @@ function renderTourDates(container) {
 ========================================================= */
 
 const hero = document.querySelector(".hero");
+const heroImage = document.querySelector(".hero-image");
 const heroContent = document.querySelector(".hero-content");
 
-if (hero) {
+if (heroImage) {
     window.addEventListener("scroll", () => {
         const scrollPosition = window.scrollY;
         const heroHeight = hero.offsetHeight;
@@ -184,11 +183,11 @@ if (hero) {
         progress = progress * progress; // ease-in curve
 
         // Background camera movement
-        const scale = 100 + (progress * 35);
-        const position = -progress * 150;
+        const scale = 100 + (progress * 100);
+        const position = progress * 200;
 
-        hero.style.zoom = `${scale}%`;
-        hero.style.backgroundPosition = `center ${position}%`;
+        heroImage.style.zoom = `${scale}%`;
+        heroImage.style.backgroundPosition = `center ${position}px`;
 
         // Content movement + fade
         if (heroContent) {
@@ -229,7 +228,7 @@ window.addEventListener("scroll", () => {
 });
  
 document.addEventListener("partials:loaded", () => {
-    const header = document.querySelector(".site-header");
+    const header = document.querySelector("header");
     if (!header) return;
  
     const hero = document.querySelector(".hero");

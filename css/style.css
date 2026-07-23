@@ -62,6 +62,7 @@
 
 html {
     min-height: 100%;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -264,18 +265,16 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    height: 90px;
-    padding: 0 50px;
+    padding: var(--space-md);
+    gap: var(--space-md);
     display: grid;
     grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 100%; /* new: row = header's own height, not content height */
     align-items: center;
     z-index: 100;
     background: transparent;
     transition: background var(--transition);
-}
-
-header .socials {
-    justify-self: end;
+    overflow: visible; /* let taller content spill out visually without resizing the row */
 }
 
 .theme-dark header.solid {
@@ -346,10 +345,11 @@ footer {
     transform: translateY(-3px) scale(150%);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1000px) {
     header {
         height: 70px;
-        padding: 0 20px;
+        padding: var(--space-sm);
+        gap: var(--space-xs);
     }
 
     .header-logo a {
@@ -363,9 +363,13 @@ footer {
     .main-nav a {
         font-size: .65rem;
     }
+    
 
     header .socials {
-        gap: 12px;
+        gap: var(--space-xs);
+        align-items: center;
+        flex-direction: column;
+        align-self: start;
     }
 }
 
@@ -376,16 +380,31 @@ footer {
 .hero {
     height: 100vh;
     width: 100%;
-    background-image: url("../images/background.jpg");
-    background-size: cover;
-    background-position: center 0%;
-    background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
     position: relative;
     overflow: hidden;
+}
+
+.hero-image {
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    background-position: center 0%;
+    background-repeat: no-repeat;
+    background-image: url("../images/background.jpg");
+}
+
+.hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
 }
 
 .overlay {
