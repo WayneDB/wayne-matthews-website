@@ -207,6 +207,26 @@ button:hover {
     color: var(--text-dark);
 }
 
+.icon-button {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    color: var(--text-light);
+    font-size: 1.3rem;
+    filter: drop-shadow(0 2px 5px var(--shadow));
+    transition: color var(--transition), transform var(--transition);
+    cursor: pointer;
+}
+
+
+.icon-button:hover {
+    background: none;
+    color: var(--secondary);
+    transform: translateY(-3px) scale(120%);
+}
+
 .card {
     background: var(--background-dark);
     border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
@@ -279,7 +299,7 @@ button:hover {
 }
 
 /* =============================================================
-   HEADER & FOOTER
+   HEADER, FOOTER & MENU
 ============================================================= */
 
 header {
@@ -337,12 +357,7 @@ footer {
     font-weight: var(--weight-medium);
     letter-spacing: 2.5px;
     text-shadow: 0 2px 8px var(--shadow);
-    transition: color var(--transition);
-}
-
-.main-nav a.active {
-    border-bottom: 1px solid var(--secondary);
-    padding-bottom: 5px;
+    transition: color var(--transition), transform var(--transition);
 }
 
 .socials {
@@ -351,48 +366,19 @@ footer {
     gap: 22px;
 }
 
-.socials a {
-    color: var(--text-light);
-    font-size: 1.3rem;
-    filter: drop-shadow(0 2px 5px var(--shadow));
-    transition: color var(--transition), transform var(--transition);
-}
-
 .header-logo a:hover,
-.main-nav a:hover,
-.socials a:hover {
+.main-nav a:hover{
     color: var(--secondary);
+    transform: scale(120%);
 }
 
-.socials a:hover {
-    transform: translateY(-3px) scale(150%);
+.menu-toggle,
+.mobile-menu {
+    display: none;
 }
 
-@media (max-width: 1000px) {
-    header {
-        height: 70px;
-        padding: var(--space-sm);
-        gap: var(--space-xs);
-    }
-
-    .header-logo a {
-        font-size: 1.5rem;
-    }
-
-    .main-nav {
-        gap: 15px;
-    }
-
-    .main-nav a {
-        font-size: .65rem;
-    }
-    
-
-    header .socials {
-        align-items: center;
-        flex-direction: column;
-        align-self: start;
-    }
+.menu-toggle {
+    z-index: 95;
 }
 
 /* =============================================================
@@ -577,4 +563,52 @@ footer {
 
 .site-link:hover {
     opacity: .9;
+}
+
+/* =============================================================
+   MOBILE
+============================================================= */
+
+@media (max-width: 1000px) {
+    header {
+        height: 70px;
+        padding: var(--space-sm);
+        gap: var(--space-xs);
+    }
+
+    .header-logo a {
+        font-size: 1.5rem;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .hide-on-mobile {
+        display: none;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .mobile-menu {
+        display: flex;
+        position: fixed;
+        inset: 0 0 0 auto;
+        width: fit-content;
+        padding-top: var(--space-lg);
+        background: var(--primary);
+        z-index: 90;
+        align-items: center;
+        transform: translateX(100%);
+        transition: transform var(--transition);
+        pointer-events: none;
+    }
+
+    .mobile-menu.is-open {
+        transform: translateX(0);
+        pointer-events: auto;
+    }
 }

@@ -312,3 +312,35 @@ document.addEventListener("partials:loaded", () => {
     updateHeaderState();
     window.addEventListener("scroll", updateHeaderState);
 });
+
+/* =========================================================
+   MOBILE MENU TOGGLE
+========================================================= */
+
+document.addEventListener("partials:loaded", () => {
+    const toggle = document.querySelector(".menu-toggle");
+    const menu = document.querySelector(".mobile-menu");
+    if (!toggle || !menu) return;
+
+    const icon = toggle.querySelector("i");
+
+    const closeMenu = () => {
+        menu.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+        if (icon) icon.className = "fa-solid fa-bars";
+    };
+
+    const openMenu = () => {
+        menu.classList.add("is-open");
+        toggle.setAttribute("aria-expanded", "true");
+        if (icon) icon.className = "fa-solid fa-xmark";
+    };
+
+    toggle.addEventListener("click", () => {
+        menu.classList.contains("is-open") ? closeMenu() : openMenu();
+    });
+
+    menu.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", closeMenu);
+    });
+});
