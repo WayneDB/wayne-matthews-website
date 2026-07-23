@@ -158,31 +158,40 @@ document.addEventListener("partials:loaded", () => {
 });
 
 function renderTourDates(container) {
-    fetch("data/tourdates.json")
+    const artistName = encodeURIComponent("Wayne Matthews");
+    const apikey = "7a7f46d1e6b41189f5daa668ef7e80f3";
+
+    fetch(`https://rest.bandsintown.com/artists/${artistName}/events/?app_id=${apikey}&date=upcoming`)
         .then(response => response.json())
         .then(data => {
             const template = document.getElementById("tour-date-template");
 
-            let tourdates = [...data].sort(
-                (a, b) => new Date(b.date) - new Date(a.date)
-            );
+            let events = Array.isArray(data)
+                ? [...data].sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
+                : [];
 
             const limit = container.dataset.limit;
             if (limit) {
-                tourdates = tourdates.slice(0, Number(limit));
+                events = events.slice(0, Number(limit));
             }
+            
+            if (events.length === 0) {
+                return;
+            }
+            
+            container.querySelector('#on-empty')?.remove();
 
-            tourdates.forEach(tourdate => {
+            events.forEach(event => {
                 const clone = template.content.cloneNode(true);
-                clone.querySelector('[data-field="title"]').textContent = tourdate.title;
-                clone.querySelector('[data-field="date"]').textContent = tourdate.date;
-                clone.querySelector('[data-field="location"]').textContent = tourdate.location;
+                const eventDate = new Date(event.datetime);
+                const formattedDate = eventDate.toLocaleDateString("en-US", {
+                    month: "short", day: "numeric", year: "numeric"
+                });
 
-                const link = clone.querySelector('[data-field="link"]');
-                if (tourdate.url)
-                    link.href = tourdate.url;
-                else
-                    link.classList.add("disabled");
+                clone.querySelector('[data-field="title"]').textContent = event.venue.name;
+                clone.querySelector('[data-field="date"]').textContent = formattedDate;
+                clone.querySelector('[data-field="location"]').textContent = `${event.venue.city}, ${event.venue.country}`;
+                clone.querySelector('[data-field="link"]').href = event.url;
 
                 container.appendChild(clone);
             });

@@ -73,19 +73,14 @@ body {
     font-weight: var(--weight-regular);
 }
 
-main {
-    flex: 1 0 auto;
-}
-
 /* =============================================================
    LAYOUT
 ============================================================= */
 
 section {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     text-align: center;
     padding: clamp(var(--space-sm), 10%, var(--space-xl))
 }
@@ -124,6 +119,12 @@ section h1 {
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+}
+
+.fit-content {
+    width: fit-content;
+    max-width: 100%;
+    margin-inline: auto;
 }
 
 /* =============================================================
@@ -196,6 +197,7 @@ button {
     cursor: pointer;
     transition: background var(--transition), color var(--transition);
     transition: transform var(--transition), border-color var(--transition);
+    align-self: center;
 }
 
 button:hover {
@@ -570,6 +572,7 @@ footer {
     opacity: .5;
     text-decoration: none;
     transition: opacity var(--transition);
+    margin-top: auto;
 }
 
 .site-link:hover {
