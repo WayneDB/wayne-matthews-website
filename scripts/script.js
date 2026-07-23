@@ -220,7 +220,7 @@ window.addEventListener("scroll", () => {
         show();
     } else if (currentScrollY > lastScrollY) {
         hide(); // scrolling down
-    } else if(currentScrollY < lastScrollY - 5) {
+    } else if(currentScrollY < lastScrollY - 2) {
         show(); // scrolling up
     }
 

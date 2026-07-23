@@ -299,6 +299,7 @@ header {
 footer {
     width: 100%;
     z-index: 100;
+    align-items: center;
 }
 
 .main-nav {
@@ -366,7 +367,6 @@ footer {
     
 
     header .socials {
-        gap: var(--space-xs);
         align-items: center;
         flex-direction: column;
         align-self: start;
