@@ -155,11 +155,10 @@ function initCarousel(container, items, renderItem) {
         // Wave direction: starts left when advancing, right when going back
         const stepDelay = (i) => (dir === 1 ? i : cards.length - 1 - i) * FLIP_STEP_DELAY;
 
-        const backsReady = flipping.map(({ card, item }) => {
+        flipping.forEach(({ card, item }) => {
             const back = card.querySelector(".flip-face-back");
             back.innerHTML = "";
             back.appendChild(renderItem(item));
-            return waitForMedia(back);
         });
 
         showing.forEach(({ card, item }) => {
@@ -167,9 +166,8 @@ function initCarousel(container, items, renderItem) {
             front.innerHTML = "";
             front.appendChild(renderItem(item));
         });
-        const frontsReady = showing.map(({ card }) => waitForMedia(card.querySelector(".flip-face-front")));
 
-        Promise.all([...backsReady, ...frontsReady]).then(() => {
+        Promise.resolve().then(() => {
             // Snap "showing" cards to their invisible starting angle before anything animates
             showing.forEach(({ card }) => {
                 const inner = card.querySelector(".flip-card-inner");
@@ -207,8 +205,14 @@ function initCarousel(container, items, renderItem) {
                     const inner = card.querySelector(".flip-card-inner");
                     const front = card.querySelector(".flip-face-front");
                     const back = card.querySelector(".flip-face-back");
-                    front.innerHTML = "";
-                    while (back.firstChild) front.appendChild(back.firstChild);
+
+                    // Swap roles instead of moving nodes — reparenting an <iframe>
+                    // forces it to reload, which caused the flash.
+                    front.classList.remove("flip-face-front");
+                    front.classList.add("flip-face-back");
+                    back.classList.remove("flip-face-back");
+                    back.classList.add("flip-face-front");
+
                     inner.style.transition = "none";
                     card.classList.remove("is-flipped", "flip-reverse");
                     inner.style.transitionDelay = "";

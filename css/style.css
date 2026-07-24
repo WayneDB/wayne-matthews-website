@@ -258,6 +258,7 @@ button:hover {
     filter: drop-shadow(0 2px 5px var(--shadow));
     transition: color var(--transition), transform var(--transition);
     cursor: pointer;
+    z-index: 100;
 }
 
 
@@ -295,7 +296,7 @@ button:hover {
 ============================================================= */
 
 .cover-img {
-    width: 260px;
+    width: min(260px, 60vw);
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
@@ -314,9 +315,7 @@ button:hover {
 
 .video-embed {
     position: relative;
-    min-height: 270px;
-    height: 450px;
-    max-height: 450px;
+    width: min(800px, 60vw);
     aspect-ratio: 16 / 9;
     margin: 0 auto;
 }
