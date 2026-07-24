@@ -428,6 +428,48 @@ footer {
 }
 
 /* =============================================================
+   COOKIE BANNER
+============================================================= */
+
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 200;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+    background: var(--shadow);
+    border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    transition: transform var(--transition);
+}
+
+.cookie-banner.hide {
+    transform: translateY(100%);
+}
+
+.cookie-banner p {
+    margin: 0;
+    font-size: .85rem;
+}
+
+.cookie-banner a {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+.cookie-banner button {
+    width: auto;
+    margin: 0;
+    padding: 10px 20px;
+    font-size: .85rem;
+}
+
+/* =============================================================
    HOME HERO (index.html / links.html)
 ============================================================= */
 

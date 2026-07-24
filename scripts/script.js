@@ -525,7 +525,7 @@ function suppressHideForNavigation() {
 
 // Any in-page anchor click (nav links, "skip to section", etc.)
 document.addEventListener("click", (event) => {
-    const link = event.target.closest('a[href^="#"]');
+    const link = event.target.closest('a[href*="#"]');
     if (link) {
         suppressHideForNavigation();
     }
@@ -615,5 +615,26 @@ document.addEventListener("partials:loaded", () => {
 
     menu.querySelectorAll("a").forEach(link => {
         link.addEventListener("click", closeMenu);
+    });
+});
+
+/* =========================================================
+   COOKIE BANNER
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const banner = document.getElementById("cookie-banner");
+    if (!banner) return;
+
+    const dismissBtn = document.getElementById("cookie-dismiss");
+    const STORAGE_KEY = "cookie-notice-dismissed";
+
+    if (!localStorage.getItem(STORAGE_KEY)) {
+        banner.classList.remove("hide");
+    }
+
+    dismissBtn?.addEventListener("click", () => {
+        banner.classList.add("hide");
+        localStorage.setItem(STORAGE_KEY, "true");
     });
 });
