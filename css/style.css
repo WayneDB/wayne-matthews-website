@@ -258,7 +258,6 @@ button:hover {
     filter: drop-shadow(0 2px 5px var(--shadow));
     transition: color var(--transition), transform var(--transition);
     cursor: pointer;
-    z-index: 100;
 }
 
 
@@ -417,12 +416,14 @@ footer {
     transform: scale(120%);
 }
 
-.menu-toggle,
 .mobile-menu {
     display: none;
+    overscroll-behavior: contain;
+    overflow: hidden;
 }
 
 .menu-toggle {
+    display: none;
     z-index: 95;
 }
 
