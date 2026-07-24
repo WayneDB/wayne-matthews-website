@@ -36,6 +36,17 @@ document.addEventListener("DOMContentLoaded", async () => {
    DATA-DRIVEN RENDERING
 ========================================================= */
 
+function showLoadError(container, message) {
+    const template = document.getElementById("load-error-template");
+    if (!template) return;
+    const clone = template.content.cloneNode(true);
+    if (message) {
+        clone.querySelector('[data-field="message"]').textContent = message;
+    }
+    container.innerHTML = "";
+    container.appendChild(clone);
+}
+
 // CAROUSEL
 function initCarousel(container, items, renderItem) {
     const FLIP_STEP_DELAY = 80;
@@ -309,7 +320,10 @@ function renderSocials(container) {
                 container.appendChild(clone);
             });
         })
-        .catch(error => console.error("Error loading social icons:", error));
+        .catch(error => {
+            console.error("Error loading social icons:", error);
+            showLoadError(container);
+        });
 }
 
 // VIDEOS
@@ -335,7 +349,10 @@ function renderVideos(container) {
 
             initCarousel(container, videos, render);
         })
-        .catch(error => console.error("Error loading release cards:", error));
+        .catch(error => {
+            console.error("Error loading release cards:", error);
+            showLoadError(container);
+        });
 }
 
 // RELEASES
@@ -368,7 +385,10 @@ function renderReleases(container) {
 
             initCarousel(container, releases, renderCard)
         })
-        .catch(error => console.error("Error loading release cards:", error));
+        .catch(error => {
+            console.error("Error loading release cards:", error);
+            showLoadError(container);
+        });
 }
 
 // FEATURED RELEASE
@@ -395,7 +415,10 @@ function renderFeaturedRelease(container) {
 
             container.appendChild(clone);
         })
-        .catch(error => console.error("Error loading featured release:", error));
+        .catch(error => {
+            console.error("Error loading featured release:", error);
+            showLoadError(container);
+        });
 }
 
 // TOUR DATES
@@ -444,7 +467,10 @@ function renderTourDates(container) {
                 container.appendChild(clone);
             });
         })
-        .catch(error => console.error("Error loading release cards:", error));
+        .catch(error => {
+            console.error("Error loading release cards:", error);
+            showLoadError(container, "Couldn't check upcoming tour dates — try refreshing the page.");
+        });
 }
 
 /* =========================================================

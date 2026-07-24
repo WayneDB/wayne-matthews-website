@@ -1,0 +1,14 @@
+{
+    "name": "Wayne Matthews",
+    "short_name": "Wayne Matthews",
+    "icons": [
+        {
+            "src": "images/favicon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#380d11",
+    "background_color": "#380d11",
+    "display": "standalone"
+}
