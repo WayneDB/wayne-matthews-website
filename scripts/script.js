@@ -106,9 +106,12 @@ function initCarousel(container, items, renderItem) {
         }
     };
 
-    const updateArrows = () => {
-        prevBtn?.classList.toggle("hide", isAnimating || page === 0);
-        nextBtn?.classList.toggle("hide", isAnimating || page >= lastPage(itemsPerPage));
+    const updateArrows = (targetPage = page) => {
+        prevBtn?.classList.toggle("hide", targetPage === 0);
+        prevBtn?.classList.toggle("disabled", isAnimating);
+
+        nextBtn?.classList.toggle("hide", targetPage >= lastPage(itemsPerPage));
+        nextBtn?.classList.toggle("disabled", isAnimating);
     };
 
     const fillPage = () => {
@@ -150,7 +153,7 @@ function initCarousel(container, items, renderItem) {
         }
 
         isAnimating = true;
-        updateArrows();
+        updateArrows(newPage);
 
         // Wave direction: starts left when advancing, right when going back
         const stepDelay = (i) => (dir === 1 ? i : cards.length - 1 - i) * FLIP_STEP_DELAY;
