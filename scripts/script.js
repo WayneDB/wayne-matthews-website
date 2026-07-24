@@ -73,18 +73,27 @@ function initCarousel(container, items, renderItem) {
         return card;
     };
 
-    const countColumns = () => {
-        container.innerHTML = "";
-        const sample = buildCard();
-        const front = sample.querySelector(".flip-face-front");
-        if (items[0]) front.appendChild(renderItem(items[0]));
-        container.appendChild(sample);
+    let cards = []; // moved up so countColumns() can use it
 
-        const cardWidth = sample.getBoundingClientRect().width;
+    const countColumns = () => {
+        let cardWidth;
+
+        if (cards.length > 0) {
+            // Reuse an existing card instead of tearing down the DOM to measure
+            cardWidth = cards[0].getBoundingClientRect().width;
+        } else {
+            container.innerHTML = "";
+            const sample = buildCard();
+            const front = sample.querySelector(".flip-face-front");
+            if (items[0]) front.appendChild(renderItem(items[0]));
+            container.appendChild(sample);
+            cardWidth = sample.getBoundingClientRect().width;
+            container.innerHTML = "";
+        }
+
         const gap = parseFloat(getComputedStyle(container).gap) || 0;
         const containerWidth = container.getBoundingClientRect().width;
 
-        container.innerHTML = "";
         if (!cardWidth) return 1;
         return Math.max(1, Math.floor((containerWidth + gap) / (cardWidth + gap)));
     };
@@ -94,7 +103,6 @@ function initCarousel(container, items, renderItem) {
     let itemsPerPage = countColumns();
     let page = 0;
     let isAnimating = false;
-    let cards = [];
 
     const buildGrid = () => {
         container.innerHTML = "";
@@ -265,19 +273,16 @@ function initCarousel(container, items, renderItem) {
     });
 
     window.addEventListener("resize", () => {
-        if (Date.now() < suppressResizeUntil) return;
-
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            if (Date.now() < suppressResizeUntil) return;
-
             const newItemsPerPage = countColumns();
             if (newItemsPerPage !== itemsPerPage) {
                 itemsPerPage = newItemsPerPage;
                 page = 0;
+                buildGrid();
+                fillPage();
             }
-            buildGrid();
-            fillPage();
+            // if column count is unchanged, do nothing — cards/iframes stay untouched
         }, 150);
     });
 }
