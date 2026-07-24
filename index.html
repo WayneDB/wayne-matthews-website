@@ -61,8 +61,8 @@
                 <button class="icon-button carousel-prev" aria-label="Previous releases">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-            
-                <div class="grid" data-render="releases" data-limit="5"></div>
+                
+                <div class="carousel-grid" data-render="releases"></div>
                 
                 <button class="icon-button carousel-next" aria-label="Next releases">
                     <i class="fa-solid fa-chevron-right"></i>
@@ -74,7 +74,19 @@
         <div class="divider"></div>
         <section id="videos">
             <h1>Videos</h1>
-            <div class="stack" data-render="featured-videos"></div>
+            <div  class="row gap-md carousel" data-carousel>
+            
+                <button class="icon-button carousel-prev" aria-label="Previous releases">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                
+                <div class="carousel-grid" data-render="featured-videos"></div>
+
+                <button class="icon-button carousel-next" aria-label="Next releases">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>   
+            
+            </div>
         </section>
 
         <div class="divider"></div>

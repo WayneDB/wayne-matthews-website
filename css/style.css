@@ -27,6 +27,7 @@
 
     --shadow: rgba(0,0,0,0.45);
     --transition: 0.2s ease;
+    --slow-transition: 0.5s ease;
 }
 
 .pad-xs { padding: var(--space-xs); }
@@ -114,18 +115,56 @@ section h1 {
     margin-inline: auto;
 }
 
+/* =============================================================
+   CAROUSEL
+============================================================= */
 .carousel {
     flex-wrap: nowrap;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 280px));
+.carousel-grid {
+    display: flex;
     gap: var(--space-md);
     justify-content: center;
     flex: 1;
     min-width: 0;
-    transition: opacity var(--transition);
+}
+
+.flip-card {
+    perspective: 1200px;
+    flex: 0 0 auto;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    transform-style: preserve-3d;
+    transition: transform var(--flip-duration, 0.5s) ease;
+}
+
+.flip-card.is-flipped .flip-card-inner { transform: rotateY(-180deg); }
+.flip-card.is-flipped.flip-reverse .flip-card-inner { transform: rotateY(180deg); }
+.flip-card.is-hiding .flip-card-inner {
+    transition: transform calc(var(--flip-duration/2, 0.5s) / 2) ease;
+    transform: rotateY(-90deg);
+}
+.flip-card.is-hiding.flip-reverse .flip-card-inner {
+    transform: rotateY(90deg);
+}
+
+.flip-card.is-showing .flip-card-inner {
+    transition: transform calc(var(--flip-duration/2, 0.5s) / 2) ease;
+    transition-delay: calc(var(--flip-duration/2, 0.5s) / 2) ease;
+    transform: rotateY(0deg);
+}
+.flip-face {
+    backface-visibility: hidden;
+}
+
+.flip-face-back {
+    position: absolute;
+    inset: 0;
+    transform: rotateY(180deg);
 }
 
 /* =============================================================
@@ -248,8 +287,7 @@ button:hover {
 }
 
 .hide {
-    pointer-events: none;
-    opacity: 0;
+    visibility: hidden;
 }
 
 /* =============================================================
@@ -257,7 +295,7 @@ button:hover {
 ============================================================= */
 
 .cover-img {
-    width: clamp(200px, 100%, 400px);
+    width: 260px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
@@ -276,8 +314,9 @@ button:hover {
 
 .video-embed {
     position: relative;
-    width: 100%;
-    max-width: 800px;
+    min-height: 270px;
+    height: 450px;
+    max-height: 450px;
     aspect-ratio: 16 / 9;
     margin: 0 auto;
 }

@@ -36,6 +36,235 @@ document.addEventListener("DOMContentLoaded", async () => {
    DATA-DRIVEN RENDERING
 ========================================================= */
 
+// CAROUSEL
+function initCarousel(container, items, renderItem) {
+    const FLIP_STEP_DELAY = 80;
+    const flipDuration = 0.5;
+
+    container.style.setProperty("--flip-duration", `${flipDuration}s`);
+
+    const carousel = container.closest("[data-carousel]");
+    const prevBtn = carousel?.querySelector(".carousel-prev");
+    const nextBtn = carousel?.querySelector(".carousel-next");
+
+    const waitForMedia = (el) => {
+        const media = [...el.querySelectorAll("img, iframe")];
+        if (media.length === 0) return Promise.resolve();
+        return Promise.race([
+            Promise.all(media.map(m => {
+                if (m.tagName === "IMG" && m.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    m.addEventListener("load", resolve, { once: true });
+                    m.addEventListener("error", resolve, { once: true });
+                });
+            })),
+            new Promise(resolve => setTimeout(resolve, 2000))
+        ]);
+    };
+
+    const buildCard = () => {
+        const card = document.createElement("div");
+        card.className = "flip-card";
+        card.innerHTML = `
+            <div class="flip-card-inner">
+                <div class="flip-face flip-face-front"></div>
+                <div class="flip-face flip-face-back"></div>
+            </div>`;
+        return card;
+    };
+
+    const countColumns = () => {
+        container.innerHTML = "";
+        const sample = buildCard();
+        const front = sample.querySelector(".flip-face-front");
+        if (items[0]) front.appendChild(renderItem(items[0]));
+        container.appendChild(sample);
+
+        const cardWidth = sample.getBoundingClientRect().width;
+        const gap = parseFloat(getComputedStyle(container).gap) || 0;
+        const containerWidth = container.getBoundingClientRect().width;
+
+        container.innerHTML = "";
+        if (!cardWidth) return 1;
+        return Math.max(1, Math.floor((containerWidth + gap) / (cardWidth + gap)));
+    };
+
+    const lastPage = (perPage) => Math.max(0, Math.ceil(items.length / perPage) - 1);
+
+    let itemsPerPage = countColumns();
+    let page = 0;
+    let isAnimating = false;
+    let cards = [];
+
+    const buildGrid = () => {
+        container.innerHTML = "";
+        cards = [];
+        for (let i = 0; i < itemsPerPage; i++) {
+            const card = buildCard();
+            container.appendChild(card);
+            cards.push(card);
+        }
+    };
+
+    const updateArrows = () => {
+        prevBtn?.classList.toggle("hide", isAnimating || page === 0);
+        nextBtn?.classList.toggle("hide", isAnimating || page >= lastPage(itemsPerPage));
+    };
+
+    const fillPage = () => {
+        const pageItems = items.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
+        cards.forEach((card, i) => {
+            const front = card.querySelector(".flip-face-front");
+            front.innerHTML = "";
+            if (pageItems[i]) {
+                front.appendChild(renderItem(pageItems[i]));
+                card.classList.remove("hide");
+            } else {
+                card.classList.add("hide");
+            }
+        });
+        updateArrows();
+    };
+
+    buildGrid();
+    fillPage();
+
+    const goToPage = (newPage) => {
+        if (isAnimating || newPage === page) return;
+        const dir = newPage > page ? 1 : -1;
+
+        const currentItems = items.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
+        const nextItems = items.slice(newPage * itemsPerPage, newPage * itemsPerPage + itemsPerPage);
+
+        const flipping = [], hiding = [], showing = [];
+        cards.forEach((card, i) => {
+            const has = !!currentItems[i], will = !!nextItems[i];
+            if (has && will) flipping.push({ card, item: nextItems[i], i });
+            else if (has && !will) hiding.push({ card, i });
+            else if (!has && will) showing.push({ card, item: nextItems[i], i });
+        });
+
+        if (!flipping.length && !hiding.length && !showing.length) {
+            page = newPage;
+            return updateArrows();
+        }
+
+        isAnimating = true;
+        updateArrows();
+
+        // Wave direction: starts left when advancing, right when going back
+        const stepDelay = (i) => (dir === 1 ? i : cards.length - 1 - i) * FLIP_STEP_DELAY;
+
+        const backsReady = flipping.map(({ card, item }) => {
+            const back = card.querySelector(".flip-face-back");
+            back.innerHTML = "";
+            back.appendChild(renderItem(item));
+            return waitForMedia(back);
+        });
+
+        showing.forEach(({ card, item }) => {
+            const front = card.querySelector(".flip-face-front");
+            front.innerHTML = "";
+            front.appendChild(renderItem(item));
+        });
+        const frontsReady = showing.map(({ card }) => waitForMedia(card.querySelector(".flip-face-front")));
+
+        Promise.all([...backsReady, ...frontsReady]).then(() => {
+            // Snap "showing" cards to their invisible starting angle before anything animates
+            showing.forEach(({ card }) => {
+                const inner = card.querySelector(".flip-card-inner");
+                card.classList.remove("hide");
+                inner.style.transition = "none";
+                inner.style.transform = `rotateY(${dir * 90}deg)`;
+            });
+            if (showing.length) void showing[0].card.offsetWidth; // lock that snap in
+
+            flipping.forEach(({ card, i }) => {
+                card.classList.toggle("flip-reverse", dir === -1);
+                card.querySelector(".flip-card-inner").style.transitionDelay = `${stepDelay(i)}ms`;
+                card.classList.add("is-flipped");
+            });
+
+            hiding.forEach(({ card, i }) => {
+                card.classList.toggle("flip-reverse", dir === -1);
+                card.querySelector(".flip-card-inner").style.transitionDelay = `${stepDelay(i)}ms`;
+                card.classList.add("is-hiding");
+            });
+
+            showing.forEach(({ card, i }) => {
+                const inner = card.querySelector(".flip-card-inner");
+                inner.style.transition = "";
+                inner.style.transform = "";
+                inner.style.transitionDelay = `calc(var(--transition) / 2 + ${stepDelay(i)}ms)`;
+                card.classList.add("is-showing");
+            });
+
+            const maxOffset = Math.max(0, ...cards.map((_, i) => stepDelay(i)));
+            const baseDuration = flipDuration * 1000;
+
+            setTimeout(() => {
+                flipping.forEach(({ card }) => {
+                    const inner = card.querySelector(".flip-card-inner");
+                    const front = card.querySelector(".flip-face-front");
+                    const back = card.querySelector(".flip-face-back");
+                    front.innerHTML = "";
+                    while (back.firstChild) front.appendChild(back.firstChild);
+                    inner.style.transition = "none";
+                    card.classList.remove("is-flipped", "flip-reverse");
+                    inner.style.transitionDelay = "";
+                    void inner.offsetWidth;
+                    inner.style.transition = "";
+                });
+
+                hiding.forEach(({ card }) => {
+                    const inner = card.querySelector(".flip-card-inner");
+                    card.classList.add("hide");
+                    inner.style.transition = "none";
+                    card.classList.remove("is-hiding", "flip-reverse");
+                    inner.style.transitionDelay = "";
+                    void inner.offsetWidth;
+                    inner.style.transition = "";
+                });
+
+                showing.forEach(({ card }) => {
+                    const inner = card.querySelector(".flip-card-inner");
+                    inner.style.transition = "none";
+                    card.classList.remove("is-showing");
+                    inner.style.transitionDelay = "";
+                    void inner.offsetWidth;
+                    inner.style.transition = "";
+                });
+
+                page = newPage;
+                isAnimating = false;
+                updateArrows();
+            }, maxOffset + baseDuration + 20);
+        });
+    };
+
+    prevBtn?.addEventListener("click", () => {
+        if (page > 0) goToPage(page - 1);
+    });
+    nextBtn?.addEventListener("click", () => {
+        if (page < lastPage(itemsPerPage)) goToPage(page + 1);
+    });
+
+    let resizeTimeout;
+    window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const newItemsPerPage = countColumns();
+            if (newItemsPerPage !== itemsPerPage) {
+                itemsPerPage = newItemsPerPage;
+                page = 0;
+            }
+            buildGrid();
+            fillPage();
+        }, 150);
+    });
+}
+
+
 // SOCIALS
 document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="socials"]').forEach(container => {
@@ -70,17 +299,18 @@ document.addEventListener("partials:loaded", () => {
 function renderVideos(container) {
     fetch("data/videos.json")
         .then(response => response.json())
-        .then(data => {
+        .then(videos => {
             const template = document.getElementById("video-template");
 
-            data.forEach(video => {
+            const render = (video) => {
                 const clone = template.content.cloneNode(true);
                 const embed = clone.querySelector('[data-field="embed"]');
                 embed.src = `https://www.youtube.com/embed/${video.videoId}`;
                 embed.title = video.title;
+                return clone;
+            };
 
-                container.appendChild(clone);
-            });
+            initCarousel(container, videos, render);
         })
         .catch(error => console.error("Error loading release cards:", error));
 }
@@ -101,10 +331,6 @@ function renderReleases(container) {
                 (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
             );
 
-            const carousel = container.closest("[data-carousel]");
-            const prevBtn = carousel?.querySelector(".carousel-prev");
-            const nextBtn = carousel?.querySelector(".carousel-next");
-
             const renderCard = (release) => {
                 const clone = template.content.cloneNode(true);
                 const cover = clone.querySelector('[data-field="cover"]');
@@ -117,74 +343,7 @@ function renderReleases(container) {
                 return clone;
             };
 
-            // Fill the row with every release so CSS auto-fit reports
-            // every column it's actually able to create at this width.
-            const countColumns = () => {
-                container.innerHTML = "";
-                releases.forEach(release => container.appendChild(renderCard(release)));
-                const columns = getComputedStyle(container).gridTemplateColumns.split(" ").length;
-                return Math.max(1, columns);
-            };
-
-            const lastPage = (perPage) => Math.max(0, Math.ceil(releases.length / perPage) - 1);
-
-            let itemsPerPage = countColumns();
-            let page = 0;
-
-            const fillPage = () => {
-                container.innerHTML = "";
-                const start = page * itemsPerPage;
-                releases.slice(start, start + itemsPerPage).forEach(release => {
-                    container.appendChild(renderCard(release));
-                });
-
-                prevBtn?.classList.toggle("hide", page === 0);
-                nextBtn?.classList.toggle("hide", page >= lastPage(itemsPerPage));
-            };
-
-            let isAnimating = false;
-            let pendingPage = null;
-
-            const goToPage = (newPage) => {
-                if (newPage === page) return;
-                pendingPage = newPage;
-                if (isAnimating) return;
-                
-                isAnimating = true;
-                container.classList.add("hide");
-                container.addEventListener("transitionend", function swap() {
-                    container.removeEventListener("transitionend", swap);
-                    page = pendingPage;
-                    pendingPage = null;
-                    fillPage();
-                    container.classList.remove("hide");
-                    isAnimating = false;
-                }, { once: true });
-            };
-
-            fillPage();
-
-            prevBtn?.addEventListener("click", () => {
-                const current = pendingPage ?? page;
-                if (current > 0) goToPage(current - 1);
-            });
-            nextBtn?.addEventListener("click", () => {
-                const current = pendingPage ?? page;
-                if (current < lastPage(itemsPerPage)) goToPage(current + 1);
-            });
-
-            let resizeTimeout;
-            window.addEventListener("resize", () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    const newItemsPerPage = countColumns();
-                    if (newItemsPerPage !== itemsPerPage) {
-                        itemsPerPage = newItemsPerPage;
-                        page = 0; // old page index may no longer be valid at the new width
-                    }
-                    fillPage();
-                }, 150);
-            });
+            initCarousel(container, releases, renderCard)
         })
         .catch(error => console.error("Error loading release cards:", error));
 }
