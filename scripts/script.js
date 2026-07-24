@@ -257,9 +257,20 @@ function initCarousel(container, items, renderItem) {
     });
 
     let resizeTimeout;
+    let suppressResizeUntil = 0;
+
+    document.addEventListener("fullscreenchange", () => {
+        // Ignore any resize noise for a bit after entering/exiting fullscreen
+        suppressResizeUntil = Date.now() + 500;
+    });
+
     window.addEventListener("resize", () => {
+        if (Date.now() < suppressResizeUntil) return;
+
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
+            if (Date.now() < suppressResizeUntil) return;
+
             const newItemsPerPage = countColumns();
             if (newItemsPerPage !== itemsPerPage) {
                 itemsPerPage = newItemsPerPage;
