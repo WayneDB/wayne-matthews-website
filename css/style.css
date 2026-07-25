@@ -124,7 +124,6 @@ section h1 {
 
 .carousel-grid {
     display: flex;
-    gap: var(--space-md);
     justify-content: center;
     flex: 1;
     min-width: 0;
@@ -279,6 +278,7 @@ button:hover {
     transition: var(--transition);
     border-color: var(--secondary);
     filter: drop-shadow(5px 5px 10px var(--shadow));
+    z-index: 100;
 }
 
 .disabled {
@@ -297,6 +297,13 @@ button:hover {
 .cover-img {
     width: min(280px, 60vw);
     aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.gallery-img {
+    width: min(280px, 60vw);
+    aspect-ratio: 4 / 3;
     object-fit: cover;
     display: block;
 }

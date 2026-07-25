@@ -51,12 +51,16 @@ function showLoadError(container, message) {
 function initCarousel(container, items, renderItem) {
     const FLIP_STEP_DELAY = 80;
     const flipDuration = 0.5;
+    const rows = Math.max(1, parseInt(container.dataset.rows, 10) || 1);
 
     container.style.setProperty("--flip-duration", `${flipDuration}s`);
 
     const carousel = container.closest("[data-carousel]");
     const prevBtn = carousel?.querySelector(".carousel-prev");
     const nextBtn = carousel?.querySelector(".carousel-next");
+
+    const wrap = carousel?.dataset.wrap;
+    const intervalMs = parseInt(carousel?.dataset.interval, 10) || 0;
 
     const waitForMedia = (el) => {
         const media = [...el.querySelectorAll("img, iframe")];
@@ -126,10 +130,10 @@ function initCarousel(container, items, renderItem) {
     };
 
     const updateArrows = (targetPage = page) => {
-        prevBtn?.classList.toggle("hide", targetPage === 0);
+        prevBtn?.classList.toggle("hide", !wrap && targetPage === 0);
         prevBtn?.classList.toggle("disabled", isAnimating);
-
-        nextBtn?.classList.toggle("hide", targetPage >= lastPage(itemsPerPage));
+        
+        nextBtn?.classList.toggle("hide", !wrap && targetPage >= lastPage(itemsPerPage));
         nextBtn?.classList.toggle("disabled", isAnimating);
     };
 
@@ -151,9 +155,9 @@ function initCarousel(container, items, renderItem) {
     buildGrid();
     fillPage();
 
-    const goToPage = (newPage) => {
+    const goToPage = (newPage, forceDir = null) => {
         if (isAnimating || newPage === page) return;
-        const dir = newPage > page ? 1 : -1;
+    const dir = forceDir !== null ? forceDir : (newPage > page ? 1 : -1);
 
         const currentItems = items.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
         const nextItems = items.slice(newPage * itemsPerPage, newPage * itemsPerPage + itemsPerPage);
@@ -215,12 +219,11 @@ function initCarousel(container, items, renderItem) {
                 const inner = card.querySelector(".flip-card-inner");
                 inner.style.transition = "";
                 inner.style.transform = "";
-                inner.style.transitionDelay = `calc(var(--transition) / 2 + ${stepDelay(i)}ms)`;
+                inner.style.transitionDelay = `${stepDelay(i)}ms`;
                 card.classList.add("is-showing");
             });
 
             const maxOffset = Math.max(0, ...cards.map((_, i) => stepDelay(i)));
-            const baseDuration = flipDuration * 1000;
 
             setTimeout(() => {
                 flipping.forEach(({ card }) => {
@@ -264,15 +267,40 @@ function initCarousel(container, items, renderItem) {
                 page = newPage;
                 isAnimating = false;
                 updateArrows();
-            }, maxOffset + baseDuration + 20);
+            }, maxOffset + (flipDuration * 1000) + 20);
         });
     };
 
-    prevBtn?.addEventListener("click", () => {
+    const goToNextPage = () => {
+        if (page < lastPage(itemsPerPage)) goToPage(page + 1);
+        else if (wrap) goToPage(0, 1);
+    };
+
+    const goToPrevPage = () => {
         if (page > 0) goToPage(page - 1);
+        else if (wrap) goToPage(lastPage(itemsPerPage), -1);
+    };
+
+    let autoplayTimer = null;
+    const scheduleAutoplay = () => {
+        if (!intervalMs) return;
+        clearTimeout(autoplayTimer);
+        autoplayTimer = setTimeout(() => {
+            goToNextPage();
+            scheduleAutoplay();
+        }, intervalMs);
+    };
+    const stopAutoplay = () => clearTimeout(autoplayTimer);
+
+    prevBtn?.addEventListener("click", () => {
+        stopAutoplay();
+        goToPrevPage();
+        scheduleAutoplay();
     });
     nextBtn?.addEventListener("click", () => {
-        if (page < lastPage(itemsPerPage)) goToPage(page + 1);
+        stopAutoplay();
+        goToNextPage();
+        scheduleAutoplay();
     });
 
     let resizeTimeout;
@@ -296,6 +324,34 @@ function initCarousel(container, items, renderItem) {
             // if column count is unchanged, do nothing — cards/iframes stay untouched
         }, 150);
     });
+
+    if (intervalMs && carousel) {
+        let isHovered = false;
+        let isVisible = false;
+
+        const maybeStart = () => {
+            if (isVisible && !isHovered) scheduleAutoplay();
+            else stopAutoplay();
+        };
+
+        carousel.addEventListener("mouseenter", () => {
+            isHovered = true;
+            maybeStart();
+        });
+        carousel.addEventListener("mouseleave", () => {
+            isHovered = false;
+            maybeStart();
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                isVisible = entry.isIntersecting;
+                maybeStart();
+            });
+        }, { threshold: 0.4 });
+
+        observer.observe(carousel);
+    }
 }
 
 
@@ -348,6 +404,37 @@ function renderVideos(container) {
             };
 
             initCarousel(container, videos, render);
+        })
+        .catch(error => {
+            console.error("Error loading release cards:", error);
+            showLoadError(container);
+        });
+}
+
+// GALLERY
+document.addEventListener("partials:loaded", () => {
+    document.querySelectorAll('[data-render="gallery"]').forEach(container => {
+        renderGallery(container);
+    });
+});
+
+function renderGallery(container) {
+    const galleryName = container.dataset.gallery || "main";
+
+    fetch(`data/gallery-${galleryName}.json`)
+        .then(response => response.json())
+        .then(photos => {
+            const template = document.getElementById("gallery-photo-template");
+
+            const render = (photo) => {
+                const clone = template.content.cloneNode(true);
+                const img = clone.querySelector('[data-field="image"]');
+                img.src = photo.image;
+                img.alt = photo.alt || "Wayne Matthews photo";
+                return clone;
+            };
+
+            initCarousel(container, photos, render);
         })
         .catch(error => {
             console.error("Error loading release cards:", error);
@@ -473,6 +560,8 @@ function renderTourDates(container) {
         });
 }
 
+
+
 /* =========================================================
    HERO SCROLL EFFECT
    Fake camera push-in on the homepage hero as the user scrolls.
@@ -508,7 +597,6 @@ if (heroImage) {
         }
     });
 }
-
 
 /* =========================================================
    HIDE NAV ON SCROLL DOWN
