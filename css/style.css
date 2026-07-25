@@ -151,6 +151,11 @@ section h1 {
     transform: rotateY(90deg);
 }
 
+.flip-card:has(.card:hover) {
+    position: relative;
+    z-index: 100;
+}
+
 .flip-card.is-showing .flip-card-inner {
     transition: transform calc(var(--flip-duration/2, 0.5s) / 2) ease;
     transition-delay: calc(var(--flip-duration/2, 0.5s) / 2) ease;
@@ -276,6 +281,7 @@ button:hover {
 }
 
 .card {
+    position: relative;
     background: var(--background-dark);
     border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
     transition: transform var(--transition), border-color var(--transition), filter var(--transition);
@@ -339,6 +345,7 @@ button:hover {
     max-width: 90vw;
     max-height: 90vh;
     object-fit: contain;
+    transition: transform var(--transition);
 }
 
 .close-button {

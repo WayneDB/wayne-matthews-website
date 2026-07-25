@@ -958,30 +958,88 @@ document.addEventListener("click", (event) => {
    LIGHT BOX
 ========================================================= */
 
+let lightboxOriginRect = null; // remembers the thumbnail's position for the close animation
+
 document.addEventListener("click", (event) => {
     const img = event.target.closest('[data-render="gallery"] img');
     if (img) {
-        openLightbox(img.src, img.alt);
+        openLightbox(img);
         return;
     }
-    if (event.target.closest(".close-button") || event.target.id === "lightbox") {
-        closeLightbox();
-    }
+    closeLightbox();
 });
 
 document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeLightbox();
 });
 
-function openLightbox(src, alt) {
+function openLightbox(sourceImg) {
     const lightbox = document.getElementById("lightbox");
     const image = document.getElementById("lightbox-image");
     if (!lightbox || !image) return;
-    image.src = src;
-    image.alt = alt || "";
+
+    lightboxOriginRect = sourceImg.getBoundingClientRect();
+
+    image.src = sourceImg.src;
+    image.alt = sourceImg.alt || "";
     lightbox.classList.remove("hide");
+
+    // Wait for the image to have its natural lightbox layout before measuring it
+    const placeAndAnimate = () => {
+        const targetRect = image.getBoundingClientRect();
+        const dx = lightboxOriginRect.left - targetRect.left;
+        const dy = lightboxOriginRect.top - targetRect.top;
+        const scaleX = lightboxOriginRect.width / targetRect.width;
+        const scaleY = lightboxOriginRect.height / targetRect.height;
+
+        // Snap to the thumbnail's spot/size with no transition
+        image.style.transition = "none";
+        image.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+        image.style.transformOrigin = "top left";
+
+        void image.offsetWidth; // force the snap to apply before animating
+
+        // Animate to natural position/size
+        requestAnimationFrame(() => {
+            image.style.transition = "";
+            image.style.transform = "translate(0, 0) scale(1, 1)";
+        });
+    };
+
+    if (image.complete) {
+        placeAndAnimate();
+    } else {
+        image.addEventListener("load", placeAndAnimate, { once: true });
+    }
 }
 
 function closeLightbox() {
-    document.getElementById("lightbox")?.classList.add("hide");
+    const lightbox = document.getElementById("lightbox");
+    const image = document.getElementById("lightbox-image");
+    if (!lightbox || !image || lightbox.classList.contains("hide")) return;
+
+    if (!lightboxOriginRect) {
+        lightbox.classList.add("hide");
+        return;
+    }
+
+    const currentRect = image.getBoundingClientRect();
+    const dx = lightboxOriginRect.left - currentRect.left;
+    const dy = lightboxOriginRect.top - currentRect.top;
+    const scaleX = lightboxOriginRect.width / currentRect.width;
+    const scaleY = lightboxOriginRect.height / currentRect.height;
+
+    image.style.transformOrigin = "top left";
+    image.style.transform = `translate(${dx}px, ${dy}px) scale(${scaleX}, ${scaleY})`;
+
+    const onDone = () => {
+        lightbox.classList.add("hide");
+        image.style.transition = "none";
+        image.style.transform = "";
+        image.style.transformOrigin = "";
+        void image.offsetWidth;
+        image.style.transition = "";
+        image.removeEventListener("transitionend", onDone);
+    };
+    image.addEventListener("transitionend", onDone, { once: true });
 }
