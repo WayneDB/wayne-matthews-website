@@ -258,6 +258,18 @@ button:hover {
     cursor: pointer;
 }
 
+.toggle {
+    padding: 6px 14px;
+    margin: 0;
+    font-size: .75rem;
+    background: transparent;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent) !important;
+}
+
+.toggle.active {
+    background: var(--primary);
+    border-color: var(--primary) !important;
+}
 
 .icon-button:hover {
     background: none;
@@ -315,7 +327,7 @@ button:hover {
 }
 
 /* =============================================================
-   VIDEOS
+   VIDEO EMBED
 ============================================================= */
 
 .video-embed {
@@ -331,6 +343,26 @@ button:hover {
     width: 100%;
     height: 100%;
     border: none;
+}
+
+/* =============================================================
+   SPOTIFY EMBED
+============================================================= */
+
+.spotify-embed {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.spotify-embed iframe {
+    width: 100%;
+    border: none;
+    display: block;
+}
+
+.spotify-embed.spotify-embed-lg iframe {
+    height: 512px; /* artist, album, or playlist */
 }
 
 /* =============================================================
@@ -412,6 +444,7 @@ header {
 }
 
 footer {
+    background: var(--shadow);
     width: 100%;
     z-index: 100;
     align-items: center;
@@ -529,7 +562,7 @@ footer {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: 0;
+    z-index: -1;
 }
 
 .overlay {
@@ -665,7 +698,6 @@ footer {
     opacity: .5;
     text-decoration: none;
     transition: opacity var(--transition);
-    margin-top: auto;
 }
 
 .site-link:hover {

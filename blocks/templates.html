@@ -28,7 +28,9 @@
 <!-- Featured Release Template -->
 <template id="featured-release-template">
     <div class="row gap-md fit-content">
-        <img class="cover-img" src="" alt="" data-field="cover">
+        <a class="card" href="#" target="_blank" data-field="link">
+            <img class="cover-img" src="" alt="" data-field="cover">
+        </a>
         <div class="stack gap-sm">
             <p class="eyebrow" data-field="year"></p>
             <h3 data-field="title"></h3>
@@ -41,13 +43,12 @@
 
 <!-- Tour Date Template -->
 <template id="tour-date-template">
-    <a class="card row gap-sm pad-sm" href="#" target="_blank" data-field="link">
+    <a class="card stack gap-sm pad-sm" href="#" target="_blank" data-field="link">
         <div class="stack gap-xs">
             <p class="eyebrow" data-field="date"></p>
             <div class="row gap-xs">
                 <h3 data-field="title"></h3>
-                <p>|</p>
-                <p data-field="location"></p>
+                <p class="muted" data-field="location"></p>
             </div>
         </div>
     </a>
@@ -69,4 +70,13 @@
 
 <template id="gallery-photo-template">
     <img class="gallery-img" src="" alt="" data-field="image">
+</template>
+
+<!-- Press Track Template -->
+
+<!-- Press Photo Template -->
+<template id="press-photo-template">
+    <a href="#" download class="card" data-field="link">
+        <img class="gallery-img" src="" alt="" data-field="image">
+    </a>
 </template>

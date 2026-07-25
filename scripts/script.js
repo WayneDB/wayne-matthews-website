@@ -48,6 +48,18 @@ function showLoadError(container, message) {
 }
 
 // CAROUSEL
+function preloadCarouselImages(items, renderItem) {
+    items.forEach(item => {
+        const rendered = renderItem(item);
+        rendered.querySelectorAll?.("img").forEach(img => {
+            if (img.src) {
+                const preload = new Image();
+                preload.src = img.src;
+            }
+        });
+    });
+}
+
 function initCarousel(container, items, renderItem) {
     const FLIP_STEP_DELAY = 80;
     const flipDuration = 0.5;
@@ -87,6 +99,8 @@ function initCarousel(container, items, renderItem) {
             </div>`;
         return card;
     };
+
+    preloadCarouselImages(items, renderItem);
 
     let cards = []; // moved up so countColumns() can use it
 
@@ -355,11 +369,16 @@ function initCarousel(container, items, renderItem) {
 }
 
 
-// SOCIALS
 document.addEventListener("partials:loaded", () => {
-    document.querySelectorAll('[data-render="socials"]').forEach(container => {
-        renderSocials(container);
-    });
+    document.querySelectorAll('[data-render="socials"]').forEach(container => { renderSocials(container); });
+    document.querySelectorAll('[data-render="releases"]').forEach(container => { renderReleases(container); });
+    document.querySelectorAll('[data-render="featured-release"]').forEach(container => { renderFeaturedRelease(container); });
+    document.querySelectorAll('[data-render="gallery"]').forEach(container => { renderGallery(container); });
+    document.querySelectorAll('[data-render="featured-videos"]').forEach(container => { renderVideos(container); });
+    document.querySelectorAll('[data-render="tour-dates"]').forEach(container => { renderTourDates(container); });
+
+    document.querySelectorAll('[data-render="press-bio"]').forEach(container => { renderPressBio(container); });
+    document.querySelectorAll('[data-render="press-photos"]').forEach(container => { renderPressPhotos(container); });
 });
 
 function renderSocials(container) {
@@ -381,13 +400,6 @@ function renderSocials(container) {
             showLoadError(container);
         });
 }
-
-// VIDEOS
-document.addEventListener("partials:loaded", () => {
-    document.querySelectorAll('[data-render="featured-videos"]').forEach(container => {
-        renderVideos(container);
-    });
-});
 
 function renderVideos(container) {
     fetch("data/videos.json")
@@ -412,12 +424,6 @@ function renderVideos(container) {
 }
 
 // GALLERY
-document.addEventListener("partials:loaded", () => {
-    document.querySelectorAll('[data-render="gallery"]').forEach(container => {
-        renderGallery(container);
-    });
-});
-
 function renderGallery(container) {
     const galleryName = container.dataset.gallery || "main";
 
@@ -443,12 +449,6 @@ function renderGallery(container) {
 }
 
 // RELEASES
-document.addEventListener("partials:loaded", () => {
-    document.querySelectorAll('[data-render="releases"]').forEach(container => {
-        renderReleases(container);
-    });
-});
-
 function renderReleases(container) {
     fetch("data/releases.json")
         .then(response => response.json())
@@ -479,12 +479,6 @@ function renderReleases(container) {
 }
 
 // FEATURED RELEASE
-document.addEventListener("partials:loaded", () => {
-    document.querySelectorAll('[data-render="featured-release"]').forEach(container => {
-        renderFeaturedRelease(container);
-    });
-});
-
 function renderFeaturedRelease(container) {
     fetch("data/releases.json")
         .then(response => response.json())
@@ -498,7 +492,7 @@ function renderFeaturedRelease(container) {
             cover.alt = `${release.title} cover art`;
             clone.querySelector('[data-field="year"]').textContent = release.year;
             clone.querySelector('[data-field="title"]').textContent = release.title;
-            clone.querySelector('[data-field="link"]').href = release.url;
+            clone.querySelectorAll('[data-field="link"]')?.forEach(a => a.href = release.url);
 
             container.appendChild(clone);
         })
@@ -508,13 +502,28 @@ function renderFeaturedRelease(container) {
         });
 }
 
-// TOUR DATES
-document.addEventListener("partials:loaded", () => {
-    document.querySelectorAll('[data-render="tour-dates"]').forEach(container => {
-        renderTourDates(container);
-    });
-});
+// PRESS TRACKS
+function renderPressTracks(container) {
+    return fetch("data/press-tracks.json")
+        .then(response => response.json())
+        .then(tracks => {
+            const template = document.getElementById("press-track-template");
+            container.innerHTML = "";
+            tracks.forEach(track => {
+                const clone = template.content.cloneNode(true);
+                const embed = clone.querySelector('[data-field="embed"]');
+                embed.src = `https://open.spotify.com/embed/album/${track.spotifyId}?utm_source=generator&theme=0`;
+                embed.title = track.title;
+                container.appendChild(clone);
+            });
+        })
+        .catch(error => {
+            console.error("Error loading press tracks:", error);
+            showLoadError(container);
+        });
+}
 
+// TOUR DATES
 function renderTourDates(container) {
     const artistName = encodeURIComponent("Wayne Matthews");
     const apikey = "7a7f46d1e6b41189f5daa668ef7e80f3";
@@ -799,3 +808,116 @@ document.addEventListener("click", (event) => {
         showCookieBanner();
     }
 }, true);
+
+/* =========================================================
+   PRESS KIT
+========================================================= */
+
+/* =========================================================
+   PRESS KIT
+========================================================= */
+
+let pressBioData = null;
+
+function getPressLanguage() {
+    return localStorage.getItem("language") || "en";
+}
+
+function renderPressBio(container) {
+    return fetch("data/press-bio.json")
+        .then(response => response.json())
+        .then(data => {
+            pressBioData = data;
+            applyPressLanguage();
+        })
+        .catch(error => {
+            console.error("Error loading press bio:", error);
+            showLoadError(container);
+        });
+}
+
+function applyPressLanguage() {
+    if (!pressBioData) return;
+    const lang = getPressLanguage();
+    const content = pressBioData[lang] || pressBioData.en;
+
+    document.documentElement.lang = lang;
+
+    const titleEl = document.querySelector('[data-field="press-title"]');
+    if (titleEl) titleEl.textContent = content.title;
+
+    const taglineEl = document.querySelector('[data-field="press-tagline"]');
+    if (taglineEl) taglineEl.textContent = content.tagline;
+
+    const bioContainer = document.querySelector('[data-render="press-bio"]');
+    if (bioContainer) {
+        bioContainer.innerHTML = "";
+
+        content.paragraphs.forEach(text => {
+            const p = document.createElement("p");
+            p.textContent = text;
+            p.style.marginTop = "var(--space-xs)";
+            bioContainer.appendChild(p);
+        });
+
+        if (content.mentions?.length) {
+            const heading = document.createElement("h3");
+            heading.style.marginTop = "var(--space-md)";
+            heading.textContent = content.mentionsTitle;
+            bioContainer.appendChild(heading);
+
+            const list = document.createElement("ul");
+            list.style.marginLeft = "var(--space-md)";
+            list.style.marginTop = "var(--space-xs)";
+
+            content.mentions.forEach(mention => {
+                const li = document.createElement("li");
+                if (mention.url) {
+                    const a = document.createElement("a");
+                    a.href = mention.url;
+                    a.target = "_blank";
+                    a.textContent = mention.text;
+                    a.style.textDecoration = "underline";
+                    li.appendChild(a);
+                } else {
+                    li.textContent = mention.text;
+                }
+                list.appendChild(li);
+            });
+            bioContainer.appendChild(list);
+        }
+    }
+
+    document.querySelectorAll("[data-language]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.langBtn === lang);
+    });
+}
+
+document.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-language]");
+    if (!btn) return;
+    localStorage.setItem("language", btn.dataset.langBtn);
+    applyPressLanguage();
+});
+
+function renderPressPhotos(container) {
+    return fetch("data/press-photos.json")
+        .then(response => response.json())
+        .then(photos => {
+            const template = document.getElementById("press-photo-template");
+            container.innerHTML = "";
+            photos.forEach(photo => {
+                const clone = template.content.cloneNode(true);
+                const link = clone.querySelector('[data-field="link"]');
+                const img = clone.querySelector('[data-field="image"]');
+                link.href = photo.image;
+                img.src = photo.image;
+                img.alt = photo.alt || "Wayne Matthews photo";
+                container.appendChild(clone);
+            });
+        })
+        .catch(error => {
+            console.error("Error loading press photos:", error);
+            showLoadError(container);
+        });
+}

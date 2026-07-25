@@ -36,17 +36,47 @@
 
 <body class="theme-dark">
     <div data-component="templates"></div>
-    <div data-component="header"></div>
-    <div class="herofade" style="position: absolute; transform: translateX(40px);">
-        <div class="socials" data-render="socials"></div>
-    </div>
+    <header>
+        <div class="herofade" style="transform: translateX(-40px);">
+            <div class="header-logo  hide-on-scroll">
+                <a href="index.html">Wayne Matthews</a>
+            </div>
+        </div>
+
+        <div class="herofade hide-on-mobile" style="transform: translateY(-40px);">
+            <nav class="main-nav hide-on-scroll" data-render="nav">
+                <a href="index.html#home">Home</a>
+                <a href="index.html#music">Music</a>
+                <a href="index.html#videos">Videos</a>
+                <a href="index.html#photos">Photos</a>
+                <a href="index.html#tour">Tour</a>
+            </nav>
+        </div>
+
+        <div class="socials herofade hide-on-mobile" style="transform: translateX(40px);" data-render="socials"></div>
+
+        <!--MOBILE MENU-->
+        <button class="menu-toggle herofade icon-button" style="transform: translateX(40px);" aria-label="Open menu" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <div class="mobile-menu stack gap-sm pad-lg">
+            <nav class="main-nav stack gap-md">
+                <a href="index.html#home">Home</a>
+                <a href="index.html#music">Music</a>
+                <a href="index.html#videos">Videos</a>
+                <a href="index.html#photos">Photos</a>
+                <a href="index.html#tour">Tour</a>
+            </nav>
+            <div class="divider"></div>
+            <div class="socials" data-render="socials"></div>
+        </div>
+
+    </header>
 
     <main>
         <div class="hero" id="home">
             <div class="hero-image"></div>
-            <!--<video class="hero-video" autoplay muted loop playsinline preload="auto" poster="images/background.jpg">
-                <source src="videos/background.mp4" type="video/mp4">
-            </video>-->
             <div class="hero-content" style="transform: translateY(100px);">
                 <div class="stack">
                     <h1 class="herofade" style="transform: translateY(40px);">Wayne Matthews</h1>
@@ -66,7 +96,10 @@
         </section>
 
         <div class="divider"></div>
-        <section>
+        <section style="position: relative;">
+            <video class="hero-video" autoplay muted loop playsinline preload="auto">
+                <source src="videos/latest_release_canvas.mp4" type="video/mp4">
+            </video>
             <h1>Latest Release</h1>
             <div data-render="featured-release"></div>
         </section>
