@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="css/style.css">
 
     <meta name="description" content="Privacy policy and cookie information for wayne-matthews.com.">
-    <script src="scripts/sender.js" defer></script>
 </head>
 
 <body class="theme-dark">
@@ -44,11 +43,12 @@
             <div class="space-md"></div>
 
             <h3>Cookies</h3>
-            <p>This site uses a small number of cookies:</p>
+            <p>This site only sets cookies with your permission. A cookie prompt appears when you use a feature that requires one — for example, joining the mailing list — and nothing is set until you accept.</p>
             <ul style="margin-left: var(--space-md); margin-top: var(--space-xs);">
-                <li>Sender (mailing list) sets cookies to manage the sign-up widget and remember your subscription status.</li>
+                <li>Sender (mailing list) sets cookies to manage the sign-up widget and remember your subscription status, only after you accept.</li>
             </ul>
             <p style="margin-top: var(--space-xs);">This site does not use cookies for advertising or third-party tracking.</p>
+            <p style="margin-top: var(--space-xs);">You can change your choice at any time via the <strong>Cookie Settings</strong> link in the site footer.</p>
 
             <div class="space-md"></div>
 
@@ -66,11 +66,8 @@
     </main>
 
     <div data-component="footer"></div>
-
-    <div id="cookie-banner" class="cookie-banner hide">
-        <p>This site uses cookies for the mailing list sign-up. <a href="privacy.html">Learn more</a>.</p>
-    <button id="cookie-dismiss">Got it</button>
+    <div data-component="cookie-banner"></div>
     
-<script src="scripts/script.js"></script>
+    <script src="scripts/script.js"></script>
 </body>
 </html>

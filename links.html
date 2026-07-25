@@ -32,7 +32,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="scripts/sender.js" defer></script>
 </head>
 <body class="theme-dark">
     <div data-component="templates"></div>
@@ -76,15 +75,14 @@
                     <div class="divider">Follow on socials</div>
                     <div class="socials" data-render="socials"></div>
                     <a href="index.html" class="site-link">wayne-matthews.com</a>
+                    <a href="#" id="cookie-settings" class="site-link">Cookie Settings</a>
                 </div>
             </div>
         </div>
     </main>
 
-    <div id="cookie-banner" class="cookie-banner hide">
-        <p>This site uses cookies for the mailing list sign-up. <a href="privacy.html">Learn more</a>.</p>
-    <button id="cookie-dismiss">Got it</button>
+    <div data-component="cookie-banner"></div>
 
-<script src="scripts/script.js"></script>
+    <script src="scripts/script.js"></script>
 </body>
 </html>

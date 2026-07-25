@@ -32,8 +32,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <script src="scripts/sender.js" defer></script>
-
 </head>
 
 <body class="theme-dark">
@@ -64,6 +62,7 @@
                 <h2>Join the mailing list</h2>
                 <p>Be the first to hear about new music, live shows and more.</p>
                 <button id="subscribebutton">Subscribe</button>
+                
         </section>
 
         <div class="divider"></div>
@@ -137,12 +136,8 @@
     </main>
 
     <div data-component="footer"></div>
-
-
-    <div id="cookie-banner" class="cookie-banner hide">
-        <p>This site uses cookies for the mailing list sign-up. <a href="privacy.html">Learn more</a>.</p>
-    <button id="cookie-dismiss">Got it</button>
-</div>
-<script src="scripts/script.js"></script>
+    <div data-component="cookie-banner"></div>
+    
+    <script src="scripts/script.js"></script>
 </body>
 </html>

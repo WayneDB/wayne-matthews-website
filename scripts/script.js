@@ -707,22 +707,95 @@ document.addEventListener("partials:loaded", () => {
 });
 
 /* =========================================================
-   COOKIE BANNER
+   COOKIES
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+const COOKIE_CONSENT_KEY = "cookie-consent"; // "accepted" | "declined"
+
+function getCookieConsent() {
+    return localStorage.getItem(COOKIE_CONSENT_KEY);
+}
+
+function pageNeedsSender() {
+    return !!document.querySelector("#subscribebutton");
+}
+
+function loadSenderScript() {
+    if (document.getElementById("sender-script")) return;
+    const script = document.createElement("script");
+    script.id = "sender-script";
+    script.src = "scripts/sender.js";
+    document.head.appendChild(script);
+}
+
+function showCookieBanner() {
     const banner = document.getElementById("cookie-banner");
     if (!banner) return;
-
-    const dismissBtn = document.getElementById("cookie-dismiss");
-    const STORAGE_KEY = "cookie-notice-dismissed";
-
-    if (!localStorage.getItem(STORAGE_KEY)) {
-        banner.classList.remove("hide");
+    const wasHidden = banner.classList.contains("hide");
+    banner.classList.remove("hide");
+    if (!wasHidden) {
+        banner.classList.remove("shake");
+        void banner.offsetWidth; // force reflow so the animation can replay
+        banner.classList.add("shake");
     }
+}
 
-    dismissBtn?.addEventListener("click", () => {
-        banner.classList.add("hide");
-        localStorage.setItem(STORAGE_KEY, "true");
+function hideCookieBanner() {
+    document.getElementById("cookie-banner")?.classList.add("hide");
+}
+
+function applyCookieConsent() {
+    if (getCookieConsent() === "accepted" && pageNeedsSender()) {
+        loadSenderScript();
+    }
+}
+
+document.addEventListener("partials:loaded", () => {
+    if (!document.getElementById("cookie-banner")) return;
+
+    applyCookieConsent(); // no auto-show on load anymore
+
+    document.getElementById("cookie-accept")?.addEventListener("click", () => {
+        localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+        hideCookieBanner();
+        applyCookieConsent();
+        resumePendingSubscribeClick();
+    });
+
+    document.getElementById("cookie-decline")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
+        hideCookieBanner();
+        applyCookieConsent();
+        pendingSubscribeTarget = null; // don't resume on decline
     });
 });
+
+let pendingSubscribeTarget = null;
+
+function resumePendingSubscribeClick() {
+    if (!pendingSubscribeTarget) return;
+    const target = pendingSubscribeTarget;
+    pendingSubscribeTarget = null;
+    // small delay lets Sender's script finish initializing before we replay the click
+    setTimeout(() => target.click(), 400);
+}
+
+// Reopen banner from footer / links-page "Cookie Settings" link (delegated, loads async)
+document.addEventListener("click", (event) => {
+    if (event.target.closest("#cookie-settings")) {
+        event.preventDefault();
+        showCookieBanner();
+    }
+});
+
+document.addEventListener("click", (event) => {
+    const btn = event.target.closest("#subscribebutton");
+    if (!btn) return;
+    if (getCookieConsent() !== "accepted") {
+        event.preventDefault();
+        event.stopPropagation();
+        pendingSubscribeTarget = btn;
+        showCookieBanner();
+    }
+}, true);
