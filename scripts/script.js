@@ -889,14 +889,14 @@ function applyPressLanguage() {
     }
 
     document.querySelectorAll("[data-language]").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.langBtn === lang);
+        btn.classList.toggle("active", btn.dataset.language === lang);
     });
 }
 
 document.addEventListener("click", (event) => {
     const btn = event.target.closest("[data-language]");
     if (!btn) return;
-    localStorage.setItem("language", btn.dataset.langBtn);
+    localStorage.setItem("language", btn.dataset.language);
     applyPressLanguage();
 });
 
