@@ -259,11 +259,9 @@ button:hover {
 }
 
 .toggle {
-    padding: 6px 14px;
-    margin: 0;
-    font-size: .75rem;
+    margin: var(--space-xs);
+    padding: var(--space-xs);
     background: transparent;
-    border: 1px solid color-mix(in srgb, currentColor 30%, transparent) !important;
 }
 
 .toggle.active {
@@ -324,6 +322,30 @@ button:hover {
     height: 32px;
     object-fit: contain;
     display: block;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--shadow) 90%, black);
+    padding: var(--space-md);
+}
+
+.lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+}
+
+.close-button {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    font-size: 1.8rem;
 }
 
 /* =============================================================
@@ -414,10 +436,9 @@ header {
     width: 100%;
     padding: var(--space-md);
     gap: var(--space-md);
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    grid-template-rows: 100%; /* new: row = header's own height, not content height */
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     z-index: 100;
     background: transparent;
     transition: background var(--transition);

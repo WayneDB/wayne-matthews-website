@@ -813,15 +813,7 @@ document.addEventListener("click", (event) => {
    PRESS KIT
 ========================================================= */
 
-/* =========================================================
-   PRESS KIT
-========================================================= */
-
 let pressBioData = null;
-
-function getPressLanguage() {
-    return localStorage.getItem("language") || "en";
-}
 
 function renderPressBio(container) {
     return fetch("data/press-bio.json")
@@ -838,55 +830,44 @@ function renderPressBio(container) {
 
 function applyPressLanguage() {
     if (!pressBioData) return;
-    const lang = getPressLanguage();
+    const lang = getSiteLanguage();
     const content = pressBioData[lang] || pressBioData.en;
 
-    document.documentElement.lang = lang;
-
-    const titleEl = document.querySelector('[data-field="press-title"]');
-    if (titleEl) titleEl.textContent = content.title;
-
-    const taglineEl = document.querySelector('[data-field="press-tagline"]');
-    if (taglineEl) taglineEl.textContent = content.tagline;
-
     const bioContainer = document.querySelector('[data-render="press-bio"]');
-    if (bioContainer) {
-        bioContainer.innerHTML = "";
+    if (!bioContainer) return;
 
-        content.paragraphs.forEach(text => {
-            const p = document.createElement("p");
-            p.textContent = text;
-            p.style.marginTop = "var(--space-xs)";
-            bioContainer.appendChild(p);
-        });
+    bioContainer.innerHTML = "";
+    content.paragraphs.forEach(text => {
+        const p = document.createElement("p");
+        p.textContent = text;
+        p.style.marginTop = "var(--space-xs)";
+        bioContainer.appendChild(p);
+    });
 
-        if (content.mentions?.length) {
-            const heading = document.createElement("h3");
-            heading.style.marginTop = "var(--space-md)";
-            heading.textContent = content.mentionsTitle;
-            bioContainer.appendChild(heading);
+    const container = document.querySelector('[data-render="press-mentions"]');
+    if (!container) return;
 
-            const list = document.createElement("ul");
-            list.style.marginLeft = "var(--space-md)";
-            list.style.marginTop = "var(--space-xs)";
+    container.innerHTML = "";
+    const list = document.createElement("ul");
+    list.style.marginLeft = "var(--space-md)";
+    list.style.marginTop = "var(--space-xs)";
 
-            content.mentions.forEach(mention => {
-                const li = document.createElement("li");
-                if (mention.url) {
-                    const a = document.createElement("a");
-                    a.href = mention.url;
-                    a.target = "_blank";
-                    a.textContent = mention.text;
-                    a.style.textDecoration = "underline";
-                    li.appendChild(a);
-                } else {
-                    li.textContent = mention.text;
-                }
-                list.appendChild(li);
-            });
-            bioContainer.appendChild(list);
+    content.mentions.forEach(mention => {
+        const li = document.createElement("li");
+        if (mention.url) {
+            const a = document.createElement("a");
+            a.href = mention.url;
+            a.target = "_blank";
+            a.textContent = mention.text;
+            a.style.textDecoration = "underline";
+            li.appendChild(a);
+        } else {
+            li.textContent = mention.text;
         }
-    }
+        list.appendChild(li);
+    });
+
+    container.appendChild(list);
 
     document.querySelectorAll("[data-language]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.language === lang);
@@ -920,4 +901,87 @@ function renderPressPhotos(container) {
             console.error("Error loading press photos:", error);
             showLoadError(container);
         });
+}
+
+/* =========================================================
+   LANGUAGE (site-wide strings — reusable anywhere)
+========================================================= */
+
+let languageStrings = null;
+
+function getSiteLanguage() {
+    return localStorage.getItem("site-lang") || "en";
+}
+
+function loadLanguageStrings() {
+    return fetch("data/language.json")
+        .then(response => response.json())
+        .then(data => {
+            languageStrings = data;
+            applyLanguageStrings();
+        })
+        .catch(error => console.error("Error loading language strings:", error));
+}
+
+function applyLanguageStrings() {
+    if (!languageStrings) return;
+    const lang = getSiteLanguage();
+    const strings = languageStrings[lang] || languageStrings.en;
+
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll("[data-string]").forEach(el => {
+        const value = strings[el.dataset.string];
+        if (value) el.textContent = value;
+    });
+
+    document.querySelectorAll("[data-language]").forEach(btn => {
+        btn.classList.toggle("active-lang", btn.dataset.language === lang);
+    });
+}
+
+document.addEventListener("partials:loaded", () => {
+    if (document.querySelector("[data-string]")) {
+        loadLanguageStrings();
+    }
+});
+
+document.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-language]");
+    if (!btn) return;
+    localStorage.setItem("site-lang", btn.dataset.language);
+    applyLanguageStrings();
+    applyPressLanguage(); // re-render bio-specific content, if present
+});
+
+/* =========================================================
+   LIGHT BOX
+========================================================= */
+
+document.addEventListener("click", (event) => {
+    const img = event.target.closest('[data-render="gallery"] img');
+    if (img) {
+        openLightbox(img.src, img.alt);
+        return;
+    }
+    if (event.target.closest(".close-button") || event.target.id === "lightbox") {
+        closeLightbox();
+    }
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeLightbox();
+});
+
+function openLightbox(src, alt) {
+    const lightbox = document.getElementById("lightbox");
+    const image = document.getElementById("lightbox-image");
+    if (!lightbox || !image) return;
+    image.src = src;
+    image.alt = alt || "";
+    lightbox.classList.remove("hide");
+}
+
+function closeLightbox() {
+    document.getElementById("lightbox")?.classList.add("hide");
 }

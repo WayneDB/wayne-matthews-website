@@ -36,21 +36,27 @@
         <div class="header-logo">
             <a href="index.html">Wayne Matthews</a>
         </div>
+        <div class="row" style="width: auto; align-self: flex-end;">
+                <button data-language="en" class="toggle">EN</button>
+                <button data-language="nl" class="toggle">NL</button>
+        </div>
     </header>
     <main>
         <section style="text-align: left;">
-            <div class="row gap-xs" style="width: auto; align-self: flex-start;">
-                <button data-language="en" class="toggle">EN</button>
-                <button data-language="nl" class="toggle">NL</button>
-            </div>
+            
 
-            <h1 data-field="press-title">Press Kit</h1>
-            <p class="eyebrow" data-field="press-tagline" style="margin-top: var(--space-xs);">Singer • Songwriter</p>
+            <h1 data-string="presskit">Press Kit</h1>
+            <p class="eyebrow" data-string="singerSongwriter" style="margin-top: var(--space-xs);">Singer • Songwriter</p>
 
             <div class="space-md"></div>
 
             <div class="row gap-lg" style="align-items: flex-start;">
-                <div style="flex: 1 1 320px;" data-render="press-bio"></div>
+                <div style="flex: 1 1 320px;">
+                    <div data-render="press-bio"></div>
+                    <div class="space-md"></div>
+                    <h3 data-string="recognition">Recognition</h3>
+                    <div data-render="press-mentions"></div>
+                </div>
 
                 <div style="flex: 1 1 280px;">
                     <div class="spotify-embed spotify-embed-lg">
@@ -68,36 +74,36 @@
 
         <div class="divider"></div>
         <section style="text-align: left;">
-            <h1>Photos</h1>
-            <p class="muted">Click a photo to download.</p>
+            <h1 data-string="photos">Photos</h1>
+            <p class="muted" data-string="photosHint">Click a photo to download.</p>
             <div class="space-sm"></div>
             <div class="row gap-md" data-render="press-photos"></div>
         </section>
 
         <div class="divider"></div>
         <section style="text-align: left;">
-            <h1>Upcoming Shows</h1>
+            <h1 data-string="upcomingShows">Upcoming Shows</h1>
             <div data-render="tour-dates">
                 <div id="on-empty">
-                    <p>There are currently no shows planned.</p>
+                    <p data-string="noShows">There are currently no shows planned.</p>
                 </div>
             </div>
         </section>
 
         <div class="divider"></div>
         <section>
-            <h1>Contact</h1>
+            <h1 data-string="contact">Contact</h1>
             <div class="stack gap-sm">
                 <a href="mailto:press@wayne-matthews.com" class="link-btn">
                     <span class="link-btn-text">
-                        <span class="link-btn-eyebrow">Press &amp; media</span>
+                        <span class="link-btn-eyebrow" data-string="press">Press &amp; media</span>
                         <span class="link-btn-label">press@wayne-matthews.com</span>
                     </span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
                 <a href="mailto:booking@wayne-matthews.com" class="link-btn">
                     <span class="link-btn-text">
-                        <span class="link-btn-eyebrow">Booking</span>
+                        <span class="link-btn-eyebrow" data-string="booking">Booking</span>
                         <span class="link-btn-label">booking@wayne-matthews.com</span>
                     </span>
                     <i class="fa-solid fa-arrow-right"></i>

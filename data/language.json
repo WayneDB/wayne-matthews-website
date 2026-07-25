@@ -1,0 +1,28 @@
+{
+    "en": {
+        "presskit": "Press Kit",
+        "singerSongwriter": "Singer • Songwriter",
+        "recognition": "Recognition",
+        "photos": "Photos",
+        "photosHint": "Click a photo to download.",
+        "music": "Music",
+        "upcomingShows": "Upcoming Shows",
+        "noShows": "There are currently no shows planned.",
+        "contact": "Contact",
+        "press": "Press & media",
+        "booking": "Booking"
+    },
+    "nl": {
+        "presskit": "Perskit",
+        "singerSongwriter": "Singer • Songwriter",
+        "recognition": "Vermeldingen",
+        "photos": "Foto's",
+        "photosHint": "Klik op een foto om te downloaden.",
+        "music": "Muziek",
+        "upcomingShows": "Optredens",
+        "noShows": "Er staan momenteel geen optredens gepland.",
+        "contact": "Contact",
+        "press": "Pers & media",
+        "booking": "Boekingen"
+    }
+}
