@@ -921,7 +921,7 @@ function renderPressPhotos(container) {
                 const clone = template.content.cloneNode(true);
                 const link = clone.querySelector('[data-field="link"]');
                 const img = clone.querySelector('[data-field="image"]');
-                link.href = photo.image;
+                link.href = photo.download;
                 img.src = photo.image;
                 img.alt = photo.alt || "Wayne Matthews photo";
                 container.appendChild(clone);
