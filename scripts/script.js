@@ -976,7 +976,7 @@ let lightboxOriginTrigger = null; // remembers which element to return focus to
 document.addEventListener("click", (event) => {
     const img = event.target.closest('[data-render="gallery"] img');
     if (img) {
-        openLightbox(img, img.replace('_thumbnail', ''));
+        openLightbox(img, img.src.replace('_thumbnail', ''));
         return;
     }
     closeLightbox();
