@@ -123,7 +123,6 @@ function initCarousel(container, items, renderItem) {
         cards = [];
         for (let i = 0; i < itemsPerPage; i++) {
             const card = buildCard();
-            if (cardWidth) card.style.width = `${cardWidth}px`;
             container.appendChild(card);
             cards.push(card);
         }
@@ -146,13 +145,15 @@ function initCarousel(container, items, renderItem) {
         cards.forEach((card, i) => {
             const inner = card.querySelector(".flip-card-inner");
             const face = card.querySelector(".flip-face");
-            inner.style.transitionDuration = "0ms";
+            inner.style.transition = "none";
             inner.style.transform = "rotateY(0deg)";
             face.innerHTML = "";
             if (pageItems[i]) {
+                card.style.width = "";
                 face.appendChild(renderItem(pageItems[i]));
                 card.classList.remove("hide");
             } else {
+                card.style.width = cardWidth ? `${cardWidth}px` : "";
                 card.classList.add("hide");
             }
         });
@@ -988,6 +989,7 @@ document.addEventListener("click", (event) => {
 ========================================================= */
 
 let lightboxOriginRect = null; // remembers the thumbnail's position for the close animation
+let lightboxOriginTrigger = null; // remembers which element to return focus to
 
 document.addEventListener("click", (event) => {
     const img = event.target.closest('[data-render="gallery"] img');
@@ -999,7 +1001,32 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeLightbox();
+    const lightbox = document.getElementById("lightbox");
+    const isOpen = lightbox && !lightbox.classList.contains("hide");
+
+    if (isOpen) {
+        if (event.key === "Escape") {
+            closeLightbox();
+            return;
+        }
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault(); // stop Space from scrolling the page
+            closeLightbox();
+            return;
+        }
+        if (event.key === "Tab") {
+            event.preventDefault();
+            lightbox.focus();
+            return;
+        }
+    }
+
+    // Open via keyboard when a gallery photo has focus
+    const img = event.target.closest('[data-render="gallery"] img');
+    if (img && (event.key === "Enter" || event.key === " ")) {
+        event.preventDefault();
+        openLightbox(img);
+    }
 });
 
 function openLightbox(sourceImg) {
@@ -1008,10 +1035,12 @@ function openLightbox(sourceImg) {
     if (!lightbox || !image) return;
 
     lightboxOriginRect = sourceImg.getBoundingClientRect();
+    lightboxOriginTrigger = sourceImg;
 
     image.src = sourceImg.src;
     image.alt = sourceImg.alt || "";
     lightbox.classList.remove("hide");
+    lightbox.focus();
 
     // Wait for the image to have its natural lightbox layout before measuring it
     const placeAndAnimate = () => {
@@ -1047,8 +1076,18 @@ function closeLightbox() {
     const image = document.getElementById("lightbox-image");
     if (!lightbox || !image || lightbox.classList.contains("hide")) return;
 
+    const returnFocus = () => {
+        if (lightboxOriginTrigger && document.contains(lightboxOriginTrigger)) {
+            lightboxOriginTrigger.focus();
+        } else {
+            document.querySelector('[data-render="gallery"]')?.focus?.();
+        }
+        lightboxOriginTrigger = null;
+    };
+
     if (!lightboxOriginRect) {
         lightbox.classList.add("hide");
+        returnFocus();
         return;
     }
 
@@ -1069,6 +1108,7 @@ function closeLightbox() {
         void image.offsetWidth;
         image.style.transition = "";
         image.removeEventListener("transitionend", onDone);
+        returnFocus();
     };
     image.addEventListener("transitionend", onDone, { once: true });
 }

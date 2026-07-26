@@ -86,12 +86,6 @@ section {
     padding: clamp(var(--space-sm), 10%, var(--space-xl))
 }
 
-section h1 {
-    align-self: flex-start;
-    text-align: left;
-    margin-bottom: var(--space-lg);
-}
-
 .stack {
     width: 100%;
     flex: content;
@@ -154,10 +148,14 @@ h1 {
     font-size: clamp(3rem, 8vw, 6rem); 
 }
 h2 { 
+    align-self: flex-start;
+    text-align: left;
     font-family: var(--font-display);
     font-weight: var(--weight-semibold);
-    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    margin-bottom: var(--space-lg);
 }
+
 h3 { 
     font-family: var(--font-display);
     font-weight: var(--weight-semibold);
@@ -711,7 +709,7 @@ footer {
     font-size: .75rem;
     letter-spacing: 1px;
     color: var(--text-light);
-    opacity: .5;
+    opacity: .6;
     text-decoration: none;
     transition: opacity var(--transition);
 }
