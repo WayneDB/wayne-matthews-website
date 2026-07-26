@@ -61,7 +61,7 @@
             <i class="fa-solid fa-bars"></i>
         </button>
 
-        <div class="mobile-menu stack gap-sm pad-lg">
+        <div class="mobile-menu stack gap-sm pad-lg" inert="true" aria-hidden="true">
             <nav class="main-nav stack gap-md">
                 <a href="index.html#home">Home</a>
                 <a href="index.html#music">Music</a>
@@ -98,7 +98,7 @@
 
         <div class="divider"></div>
         <section style="position: relative;">
-            <video class="hero-video" autoplay muted loop playsinline preload="auto">
+            <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
                 <source src="videos/latest_release_canvas.mp4" type="video/mp4">
             </video>
             <h1>Latest Release</h1>

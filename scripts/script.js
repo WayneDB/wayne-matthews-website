@@ -69,74 +69,52 @@ function preloadCarouselImages(items, renderItem) {
 
 function initCarousel(container, items, renderItem) {
     const FLIP_STEP_DELAY = 80;
-    const flipDuration = 0.5;
-    const rows = Math.max(1, parseInt(container.dataset.rows, 10) || 1);
-
-    container.style.setProperty("--flip-duration", `${flipDuration}s`);
+    const flipDuration = 500; // ms, total time for a full flip (two 250ms phases)
+    const halfDuration = flipDuration / 2;
+    const rows = 1;
 
     const carousel = container.closest("[data-carousel]");
     const prevBtn = carousel?.querySelector(".carousel-prev");
     const nextBtn = carousel?.querySelector(".carousel-next");
-
-    const wrap = carousel?.dataset.wrap;
+    const wrap = carousel?.dataset.wrap === "true";
     const intervalMs = parseInt(carousel?.dataset.interval, 10) || 0;
-
-    const waitForMedia = (el) => {
-        const media = [...el.querySelectorAll("img, iframe")];
-        if (media.length === 0) return Promise.resolve();
-        return Promise.race([
-            Promise.all(media.map(m => {
-                if (m.tagName === "IMG" && m.complete) return Promise.resolve();
-                return new Promise(resolve => {
-                    m.addEventListener("load", resolve, { once: true });
-                    m.addEventListener("error", resolve, { once: true });
-                });
-            })),
-            new Promise(resolve => setTimeout(resolve, 2000))
-        ]);
-    };
 
     const buildCard = () => {
         const card = document.createElement("div");
         card.className = "flip-card";
         card.innerHTML = `
             <div class="flip-card-inner">
-                <div class="flip-face flip-face-front"></div>
-                <div class="flip-face flip-face-back"></div>
+                <div class="flip-face"></div>
             </div>`;
         return card;
     };
 
     preloadCarouselImages(items, renderItem);
 
-    let cards = []; // moved up so countColumns() can use it
+    let cards = [];
 
     const countColumns = () => {
-        let cardWidth;
-
         if (cards.length > 0) {
-            // Reuse an existing card instead of tearing down the DOM to measure
             cardWidth = cards[0].getBoundingClientRect().width;
         } else {
             container.innerHTML = "";
             const sample = buildCard();
-            const front = sample.querySelector(".flip-face-front");
-            if (items[0]) front.appendChild(renderItem(items[0]));
+            const face = sample.querySelector(".flip-face");
+            if (items[0]) face.appendChild(renderItem(items[0]));
             container.appendChild(sample);
             cardWidth = sample.getBoundingClientRect().width;
             container.innerHTML = "";
         }
-
         const gap = parseFloat(getComputedStyle(container).gap) || 0;
         const containerWidth = container.getBoundingClientRect().width;
-
         if (!cardWidth) return 1;
         return Math.max(1, Math.floor((containerWidth + gap) / (cardWidth + gap)));
     };
 
     const lastPage = (perPage) => Math.max(0, Math.ceil(items.length / perPage) - 1);
 
-    let itemsPerPage = countColumns();
+    let columns = countColumns();
+    let itemsPerPage = columns * rows;
     let page = 0;
     let isAnimating = false;
 
@@ -145,26 +123,34 @@ function initCarousel(container, items, renderItem) {
         cards = [];
         for (let i = 0; i < itemsPerPage; i++) {
             const card = buildCard();
+            if (cardWidth) card.style.width = `${cardWidth}px`;
             container.appendChild(card);
             cards.push(card);
         }
     };
 
     const updateArrows = (targetPage = page) => {
-        prevBtn?.classList.toggle("hide", !wrap && targetPage === 0);
+        if (wrap) {
+            prevBtn?.classList.remove("hide");
+            nextBtn?.classList.remove("hide");
+        } else {
+            prevBtn?.classList.toggle("hide", targetPage === 0);
+            nextBtn?.classList.toggle("hide", targetPage >= lastPage(itemsPerPage));
+        }
         prevBtn?.classList.toggle("disabled", isAnimating);
-        
-        nextBtn?.classList.toggle("hide", !wrap && targetPage >= lastPage(itemsPerPage));
         nextBtn?.classList.toggle("disabled", isAnimating);
     };
 
     const fillPage = () => {
         const pageItems = items.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
         cards.forEach((card, i) => {
-            const front = card.querySelector(".flip-face-front");
-            front.innerHTML = "";
+            const inner = card.querySelector(".flip-card-inner");
+            const face = card.querySelector(".flip-face");
+            inner.style.transitionDuration = "0ms";
+            inner.style.transform = "rotateY(0deg)";
+            face.innerHTML = "";
             if (pageItems[i]) {
-                front.appendChild(renderItem(pageItems[i]));
+                face.appendChild(renderItem(pageItems[i]));
                 card.classList.remove("hide");
             } else {
                 card.classList.add("hide");
@@ -176,22 +162,83 @@ function initCarousel(container, items, renderItem) {
     buildGrid();
     fillPage();
 
-    const goToPage = (newPage, forceDir = null) => {
+    // Animates one card through a single 0->90->swap->90->0 sequence.
+    // Returns a Promise that resolves once the card has fully settled.
+    const animateCard = (card, i, hadContent, willHaveContent, newItem, dir) => {
+        const inner = card.querySelector(".flip-card-inner");
+        const face = card.querySelector(".flip-face");
+        const angle = dir === 1 ? -90 : 90;
+        const delay = (dir === 1 ? i : columns - 1 - i) * FLIP_STEP_DELAY;
+
+        const rotateTo = (deg, duration, wait) => new Promise(resolve => {
+            inner.style.transitionDuration = `${duration}ms`;
+            inner.style.transitionDelay = `${wait}ms`;
+            requestAnimationFrame(() => {
+                inner.style.transform = `rotateY(${deg}deg)`;
+            });
+            let done = false;
+            const finish = () => {
+                if (done) return;
+                done = true;
+                inner.removeEventListener("transitionend", onEnd);
+                resolve();
+            };
+            const onEnd = (e) => {
+                if (e.target === inner && e.propertyName === "transform") finish();
+            };
+            inner.addEventListener("transitionend", onEnd);
+            setTimeout(finish, duration + wait + 50); // safety net
+        });
+
+        return (async () => { 
+            
+            if (hadContent) { 
+                await rotateTo(angle, halfDuration, delay); 
+            } else { 
+                inner.style.transitionDuration = "0ms"; 
+                inner.style.transitionDelay = "0ms"; 
+                inner.style.transform = `rotateY(${angle}deg)`; 
+                void inner.offsetWidth;
+                await new Promise(r => setTimeout(r, delay));
+            } 
+            
+            if (willHaveContent) { 
+                face.innerHTML = ""; face.appendChild(renderItem(newItem)); 
+                card.classList.remove("hide"); 
+            } else { 
+                card.classList.add("hide"); 
+                face.innerHTML = ""; 
+            } 
+
+            inner.style.transitionDuration = "0ms"; 
+            inner.style.transitionDelay = "0ms"; 
+            inner.style.transform = `rotateY(${-angle}deg)`; 
+            void inner.offsetWidth; 
+            
+            await rotateTo(0, halfDuration, 0);
+            
+            inner.style.transitionDuration = "0ms"; 
+            inner.style.transitionDelay = "0ms"; 
+            inner.style.transform = "rotateY(0deg)"; 
+        })();
+    };
+
+    const goToPage = (newPage, forcedDir = null) => {
         if (isAnimating || newPage === page) return;
-    const dir = forceDir !== null ? forceDir : (newPage > page ? 1 : -1);
+        const dir = forcedDir !== null ? forcedDir : (newPage > page ? 1 : -1);
 
         const currentItems = items.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
         const nextItems = items.slice(newPage * itemsPerPage, newPage * itemsPerPage + itemsPerPage);
 
-        const flipping = [], hiding = [], showing = [];
+        const tasks = [];
         cards.forEach((card, i) => {
-            const has = !!currentItems[i], will = !!nextItems[i];
-            if (has && will) flipping.push({ card, item: nextItems[i], i });
-            else if (has && !will) hiding.push({ card, i });
-            else if (!has && will) showing.push({ card, item: nextItems[i], i });
+            const hadContent = !!currentItems[i];
+            const willHaveContent = !!nextItems[i];
+            if (!hadContent && !willHaveContent) return;
+            tasks.push(animateCard(card, i, hadContent, willHaveContent, nextItems[i], dir));
         });
 
-        if (!flipping.length && !hiding.length && !showing.length) {
+        if (!tasks.length) {
             page = newPage;
             return updateArrows();
         }
@@ -199,96 +246,10 @@ function initCarousel(container, items, renderItem) {
         isAnimating = true;
         updateArrows(newPage);
 
-        // Wave direction: starts left when advancing, right when going back
-        const stepDelay = (i) => (dir === 1 ? i : cards.length - 1 - i) * FLIP_STEP_DELAY;
-
-        flipping.forEach(({ card, item }) => {
-            const back = card.querySelector(".flip-face-back");
-            back.innerHTML = "";
-            back.appendChild(renderItem(item));
-        });
-
-        showing.forEach(({ card, item }) => {
-            const front = card.querySelector(".flip-face-front");
-            front.innerHTML = "";
-            front.appendChild(renderItem(item));
-        });
-
-        Promise.resolve().then(() => {
-            // Snap "showing" cards to their invisible starting angle before anything animates
-            showing.forEach(({ card }) => {
-                const inner = card.querySelector(".flip-card-inner");
-                card.classList.remove("hide");
-                inner.style.transition = "none";
-                inner.style.transform = `rotateY(${dir * 90}deg)`;
-            });
-            if (showing.length) void showing[0].card.offsetWidth; // lock that snap in
-
-            flipping.forEach(({ card, i }) => {
-                card.classList.toggle("flip-reverse", dir === -1);
-                card.querySelector(".flip-card-inner").style.transitionDelay = `${stepDelay(i)}ms`;
-                card.classList.add("is-flipped");
-            });
-
-            hiding.forEach(({ card, i }) => {
-                card.classList.toggle("flip-reverse", dir === -1);
-                card.querySelector(".flip-card-inner").style.transitionDelay = `${stepDelay(i)}ms`;
-                card.classList.add("is-hiding");
-            });
-
-            showing.forEach(({ card, i }) => {
-                const inner = card.querySelector(".flip-card-inner");
-                inner.style.transition = "";
-                inner.style.transform = "";
-                inner.style.transitionDelay = `${stepDelay(i)}ms`;
-                card.classList.add("is-showing");
-            });
-
-            const maxOffset = Math.max(0, ...cards.map((_, i) => stepDelay(i)));
-
-            setTimeout(() => {
-                flipping.forEach(({ card }) => {
-                    const inner = card.querySelector(".flip-card-inner");
-                    const front = card.querySelector(".flip-face-front");
-                    const back = card.querySelector(".flip-face-back");
-
-                    // Swap roles instead of moving nodes — reparenting an <iframe>
-                    // forces it to reload, which caused the flash.
-                    front.classList.remove("flip-face-front");
-                    front.classList.add("flip-face-back");
-                    back.classList.remove("flip-face-back");
-                    back.classList.add("flip-face-front");
-
-                    inner.style.transition = "none";
-                    card.classList.remove("is-flipped", "flip-reverse");
-                    inner.style.transitionDelay = "";
-                    void inner.offsetWidth;
-                    inner.style.transition = "";
-                });
-
-                hiding.forEach(({ card }) => {
-                    const inner = card.querySelector(".flip-card-inner");
-                    card.classList.add("hide");
-                    inner.style.transition = "none";
-                    card.classList.remove("is-hiding", "flip-reverse");
-                    inner.style.transitionDelay = "";
-                    void inner.offsetWidth;
-                    inner.style.transition = "";
-                });
-
-                showing.forEach(({ card }) => {
-                    const inner = card.querySelector(".flip-card-inner");
-                    inner.style.transition = "none";
-                    card.classList.remove("is-showing");
-                    inner.style.transitionDelay = "";
-                    void inner.offsetWidth;
-                    inner.style.transition = "";
-                });
-
-                page = newPage;
-                isAnimating = false;
-                updateArrows();
-            }, maxOffset + (flipDuration * 1000) + 20);
+        Promise.all(tasks).then(() => {
+            page = newPage;
+            isAnimating = false;
+            updateArrows();
         });
     };
 
@@ -325,24 +286,17 @@ function initCarousel(container, items, renderItem) {
     });
 
     let resizeTimeout;
-    let suppressResizeUntil = 0;
-
-    document.addEventListener("fullscreenchange", () => {
-        // Ignore any resize noise for a bit after entering/exiting fullscreen
-        suppressResizeUntil = Date.now() + 500;
-    });
-
     window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            const newItemsPerPage = countColumns();
-            if (newItemsPerPage !== itemsPerPage) {
-                itemsPerPage = newItemsPerPage;
+            const newColumns = countColumns();
+            if (newColumns !== columns) {
+                columns = newColumns;
+                itemsPerPage = columns * rows;
                 page = 0;
                 buildGrid();
                 fillPage();
             }
-            // if column count is unchanged, do nothing — cards/iframes stay untouched
         }, 150);
     });
 
@@ -355,14 +309,8 @@ function initCarousel(container, items, renderItem) {
             else stopAutoplay();
         };
 
-        carousel.addEventListener("mouseenter", () => {
-            isHovered = true;
-            maybeStart();
-        });
-        carousel.addEventListener("mouseleave", () => {
-            isHovered = false;
-            maybeStart();
-        });
+        carousel.addEventListener("mouseenter", () => { isHovered = true; maybeStart(); });
+        carousel.addEventListener("mouseleave", () => { isHovered = false; maybeStart(); });
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -396,7 +344,9 @@ function renderSocials(container) {
 
             data.forEach(social => {
                 const clone = template.content.cloneNode(true);
-                clone.querySelector('[data-field="link"]').href = social.url;
+                const link = clone.querySelector('[data-field="link"]');
+                link.href = social.url;
+                link.setAttribute("aria-label", social.platform);
                 clone.querySelector('[data-field="icon"]').className = social.iconClass;
 
                 container.appendChild(clone);
@@ -643,8 +593,31 @@ window.addEventListener("scroll", () => {
     const currentScrollY = window.scrollY;
     const hideableElements = document.querySelectorAll(".hide-on-scroll");
 
-    const show = () => hideableElements.forEach(el => el.classList.remove("is-hidden"));
-    const hide = () => hideableElements.forEach(el => el.classList.add("is-hidden"));
+    const show = () => {
+        hideableElements.forEach(el => {
+            el.inert = false;
+            el.classList.remove("hide");
+            el.classList.remove("is-hiding");
+        });
+    };
+
+    const hide = () => {
+        hideableElements.forEach(el => {
+            el.classList.add("is-hiding");
+
+            // Add .hide after the opacity transition finishes
+            el.addEventListener("transitionend", function handler(event) {
+                if (
+                    event.propertyName === "opacity" &&
+                    el.classList.contains("is-hiding")
+                ) {
+                    el.inert = true;
+                    el.classList.add("hide");
+                    el.removeEventListener("transitionend", handler);
+                }
+            });
+        });
+    };
 
     if (isNavigating) {
         lastScrollY = currentScrollY;
@@ -704,11 +677,15 @@ document.addEventListener("partials:loaded", () => {
     const closeMenu = () => {
         menu.classList.remove("is-open");
         toggle.setAttribute("aria-expanded", "false");
+        menu.inert = true;
+        menu.setAttribute("aria-hidden", "true");
         if (icon) icon.className = "fa-solid fa-bars";
     };
 
     const openMenu = () => {
         menu.classList.add("is-open");
+        menu.inert = false;
+        menu.setAttribute("aria-hidden", "false");
         toggle.setAttribute("aria-expanded", "true");
         if (icon) icon.className = "fa-solid fa-xmark";
     };
@@ -920,7 +897,9 @@ function applyPressLanguage() {
     container.appendChild(list);
 
     document.querySelectorAll("[data-language]").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.language === lang);
+        const isActive = btn.dataset.language === lang;
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-pressed", isActive);
     });
 }
 
