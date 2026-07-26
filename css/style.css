@@ -203,9 +203,9 @@ THEMES
 .theme-dark h2 { color: var(--text-light); }
 .theme-dark h3 { color: var(--text-light); }
 .theme-dark p { color: var(--text-light); }
-.theme-dark i { color: var(--text-light); }
-.theme-dark i:hover { color: var(--secondary); }
 .theme-dark a { color: var(--secondary); }
+.theme-dark a svg { color: var(--text-light); }
+.theme-dark a svg:hover { color: var(--secondary); }
 .theme-dark .eyebrow { color: var(--secondary); }
 
 .theme-light {
@@ -217,8 +217,6 @@ THEMES
 .theme-light h2 { color: var(--text-dark); }
 .theme-light h3 { color: var(--text-dark); }
 .theme-light p { color: var(--text-dark); }
-.theme-light i { color: var(--text-dark); }
-.theme-light i:hover { color: var(--primary); }
 .theme-light a { color: var(--primary); }
 .theme-light .eyebrow { color: var(--primary); }
 
@@ -247,6 +245,13 @@ button:hover {
     transition: var(--transition);
     background: var(--secondary);
     color: var(--text-dark);
+}
+
+.icon {
+    width: 1.3rem;
+    height: 1.3rem;
+    fill: currentColor;
+    display: block;
 }
 
 .icon-button {
@@ -288,7 +293,7 @@ button:hover {
 }
 
 .card:hover {
-    transform: translateY(-10px) scale(110%);
+    transform: translateY(-10px) scale(105%);
     transition: var(--transition);
     border-color: var(--secondary);
     filter: drop-shadow(5px 5px 10px var(--shadow));

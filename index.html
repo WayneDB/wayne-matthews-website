@@ -30,7 +30,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -54,11 +53,12 @@
             </nav>
         </div>
 
-        <div class="socials herofade hide-on-mobile" style="transform: translateX(40px);" data-render="socials"></div>
+        <div class="socials herofade hide-on-mobile" style="transform: translateX(40px);" data-component="socials"></div>
 
         <!--MOBILE MENU-->
         <button class="menu-toggle herofade icon-button" style="transform: translateX(40px);" aria-label="Open menu" aria-expanded="false">
-            <i class="fa-solid fa-bars"></i>
+            <svg class="icon icon-bars" aria-hidden="true" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+            <svg class="icon icon-xmark hide" aria-hidden="true" viewBox="0 0 384 512"><path fill="currentColor" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"/></svg>
         </button>
 
         <div class="mobile-menu stack gap-sm pad-lg" inert="true" aria-hidden="true">
@@ -70,7 +70,7 @@
                 <a href="index.html#tour">Tour</a>
             </nav>
             <div class="divider"></div>
-            <div class="socials" data-render="socials"></div>
+            <div class="socials" data-component="socials"></div>
         </div>
 
     </header>
@@ -99,7 +99,6 @@
         <div class="divider"></div>
         <section style="position: relative;">
             <video class="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
-                <source src="videos/latest_release_canvas.webm" type="video/webm">
                 <source src="videos/latest_release_canvas.mp4" type="video/mp4">
             </video>
             <h2>Latest Release</h2>
@@ -112,13 +111,13 @@
             <div class="row gap-md carousel" data-carousel>
             
                 <button class="icon-button carousel-prev" aria-label="Previous releases">
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 320 512"><path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
                 </button>
                 
                 <div class="carousel-grid gap-md" data-render="releases" data-rows="2"></div>
                 
                 <button class="icon-button carousel-next" aria-label="Next releases">
-                    <i class="fa-solid fa-chevron-right"></i>
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 320 512"><path fill="currentColor" d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
                 </button>   
             
             </div>
@@ -127,16 +126,16 @@
         <div class="divider"></div>
         <section id="videos">
             <h2>Videos</h2>
-            <div  class="row gap-md carousel" data-carousel>
+            <div  class="row gap-md carousel" data-carousel data-per-page="1">
             
                 <button class="icon-button carousel-prev" aria-label="Previous releases">
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 320 512"><path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
                 </button>
                 
                 <div class="carousel-grid" data-render="featured-videos"></div>
 
                 <button class="icon-button carousel-next" aria-label="Next releases">
-                    <i class="fa-solid fa-chevron-right"></i>
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 320 512"><path fill="currentColor" d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
                 </button>   
             
             </div>
@@ -145,14 +144,14 @@
         <div class="divider"></div>
         <section id="photos">
             <h2>Photos</h2>
-            <div class="row carousel" data-carousel data-wrap="true" data-interval="000">
+            <div class="row carousel" data-carousel data-wrap="true" data-interval="5000">
                 <button class="icon-button carousel-prev" aria-label="Previous photos">
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 320 512"><path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
                 </button>
                 <div class="carousel-grid" data-render="gallery" data-gallery="main"></div>
 
                 <button class="icon-button carousel-next" aria-label="Next photos">
-                    <i class="fa-solid fa-chevron-right"></i>
+                    <svg class="icon" aria-hidden="true" viewBox="0 0 320 512"><path fill="currentColor" d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
                 </button>
             </div>
             <div class="space-md"></div>

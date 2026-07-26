@@ -43,6 +43,15 @@ document.addEventListener("DOMContentLoaded", async () => {
    DATA-DRIVEN RENDERING
 ========================================================= */
 
+const jsonCache = {};
+
+function fetchJSON(path) {
+    if (!jsonCache[path]) {
+        jsonCache[path] = fetch(path).then(response => response.json());
+    }
+    return jsonCache[path];
+}
+
 function showLoadError(container, message) {
     const template = document.getElementById("load-error-template");
     if (!template) return;
@@ -71,13 +80,13 @@ function initCarousel(container, items, renderItem) {
     const FLIP_STEP_DELAY = 80;
     const flipDuration = 500; // ms, total time for a full flip (two 250ms phases)
     const halfDuration = flipDuration / 2;
-    const rows = 1;
 
     const carousel = container.closest("[data-carousel]");
     const prevBtn = carousel?.querySelector(".carousel-prev");
     const nextBtn = carousel?.querySelector(".carousel-next");
     const wrap = carousel?.dataset.wrap === "true";
     const intervalMs = parseInt(carousel?.dataset.interval, 10) || 0;
+    const perPage = parseInt(carousel?.dataset.perPage, 10) || Number.MAX_SAFE_INTEGER;
 
     const buildCard = () => {
         const card = document.createElement("div");
@@ -92,6 +101,7 @@ function initCarousel(container, items, renderItem) {
     preloadCarouselImages(items, renderItem);
 
     let cards = [];
+    let cardWidth = 0;
 
     const countColumns = () => {
         if (cards.length > 0) {
@@ -108,21 +118,21 @@ function initCarousel(container, items, renderItem) {
         const gap = parseFloat(getComputedStyle(container).gap) || 0;
         const containerWidth = container.getBoundingClientRect().width;
         if (!cardWidth) return 1;
-        return Math.max(1, Math.floor((containerWidth + gap) / (cardWidth + gap)));
+        return Math.min(perPage, items.length, Math.max(1, Math.floor((containerWidth + gap) / (cardWidth + gap))));
     };
 
     const lastPage = (perPage) => Math.max(0, Math.ceil(items.length / perPage) - 1);
 
     let columns = countColumns();
-    let itemsPerPage = columns * rows;
     let page = 0;
     let isAnimating = false;
 
     const buildGrid = () => {
         container.innerHTML = "";
         cards = [];
-        for (let i = 0; i < itemsPerPage; i++) {
+        for (let i = 0; i < columns; i++) {
             const card = buildCard();
+            if (cardWidth) card.style.width = `${cardWidth}px`;
             container.appendChild(card);
             cards.push(card);
         }
@@ -134,26 +144,24 @@ function initCarousel(container, items, renderItem) {
             nextBtn?.classList.remove("hide");
         } else {
             prevBtn?.classList.toggle("hide", targetPage === 0);
-            nextBtn?.classList.toggle("hide", targetPage >= lastPage(itemsPerPage));
+            nextBtn?.classList.toggle("hide", targetPage >= lastPage(columns));
         }
         prevBtn?.classList.toggle("disabled", isAnimating);
         nextBtn?.classList.toggle("disabled", isAnimating);
     };
 
     const fillPage = () => {
-        const pageItems = items.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
+        const pageItems = items.slice(page * columns, page * columns + columns);
         cards.forEach((card, i) => {
             const inner = card.querySelector(".flip-card-inner");
             const face = card.querySelector(".flip-face");
-            inner.style.transition = "none";
+            inner.style.transition = "0ms";
             inner.style.transform = "rotateY(0deg)";
             face.innerHTML = "";
             if (pageItems[i]) {
-                card.style.width = "";
                 face.appendChild(renderItem(pageItems[i]));
                 card.classList.remove("hide");
             } else {
-                card.style.width = cardWidth ? `${cardWidth}px` : "";
                 card.classList.add("hide");
             }
         });
@@ -228,8 +236,8 @@ function initCarousel(container, items, renderItem) {
         if (isAnimating || newPage === page) return;
         const dir = forcedDir !== null ? forcedDir : (newPage > page ? 1 : -1);
 
-        const currentItems = items.slice(page * itemsPerPage, page * itemsPerPage + itemsPerPage);
-        const nextItems = items.slice(newPage * itemsPerPage, newPage * itemsPerPage + itemsPerPage);
+        const currentItems = items.slice(page * columns, page * columns + columns);
+        const nextItems = items.slice(newPage * columns, newPage * columns + columns);
 
         const tasks = [];
         cards.forEach((card, i) => {
@@ -255,13 +263,13 @@ function initCarousel(container, items, renderItem) {
     };
 
     const goToNextPage = () => {
-        if (page < lastPage(itemsPerPage)) goToPage(page + 1);
+        if (page < lastPage(columns)) goToPage(page + 1);
         else if (wrap) goToPage(0, 1);
     };
 
     const goToPrevPage = () => {
         if (page > 0) goToPage(page - 1);
-        else if (wrap) goToPage(lastPage(itemsPerPage), -1);
+        else if (wrap) goToPage(lastPage(columns), -1);
     };
 
     let autoplayTimer = null;
@@ -293,7 +301,6 @@ function initCarousel(container, items, renderItem) {
             const newColumns = countColumns();
             if (newColumns !== columns) {
                 columns = newColumns;
-                itemsPerPage = columns * rows;
                 page = 0;
                 buildGrid();
                 fillPage();
@@ -326,7 +333,6 @@ function initCarousel(container, items, renderItem) {
 
 
 document.addEventListener("partials:loaded", () => {
-    document.querySelectorAll('[data-render="socials"]').forEach(container => { renderSocials(container); });
     document.querySelectorAll('[data-render="releases"]').forEach(container => { renderReleases(container); });
     document.querySelectorAll('[data-render="featured-release"]').forEach(container => { renderFeaturedRelease(container); });
     document.querySelectorAll('[data-render="gallery"]').forEach(container => { renderGallery(container); });
@@ -337,31 +343,8 @@ document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="press-photos"]').forEach(container => { renderPressPhotos(container); });
 });
 
-function renderSocials(container) {
-    fetch("data/socials.json")
-        .then(response => response.json())
-        .then(data => {
-            const template = document.getElementById("social-icon-template");
-
-            data.forEach(social => {
-                const clone = template.content.cloneNode(true);
-                const link = clone.querySelector('[data-field="link"]');
-                link.href = social.url;
-                link.setAttribute("aria-label", social.platform);
-                clone.querySelector('[data-field="icon"]').className = social.iconClass;
-
-                container.appendChild(clone);
-            });
-        })
-        .catch(error => {
-            console.error("Error loading social icons:", error);
-            showLoadError(container);
-        });
-}
-
 function renderVideos(container) {
-    fetch("data/videos.json")
-        .then(response => response.json())
+    fetchJSON("data/videos.json")
         .then(videos => {
             const template = document.getElementById("video-template");
 
@@ -385,8 +368,7 @@ function renderVideos(container) {
 function renderGallery(container) {
     const galleryName = container.dataset.gallery || "main";
 
-    fetch(`data/gallery-${galleryName}.json`)
-        .then(response => response.json())
+    fetchJSON(`data/gallery-${galleryName}.json`)
         .then(photos => {
             const template = document.getElementById("gallery-photo-template");
 
@@ -408,8 +390,7 @@ function renderGallery(container) {
 
 // RELEASES
 function renderReleases(container) {
-    fetch("data/releases.json")
-        .then(response => response.json())
+    fetchJSON("data/releases.json")
         .then(data => {
             const template = document.getElementById("release-card-template");
             const releases = [...data].sort(
@@ -438,8 +419,7 @@ function renderReleases(container) {
 
 // FEATURED RELEASE
 function renderFeaturedRelease(container) {
-    fetch("data/releases.json")
-        .then(response => response.json())
+    fetchJSON("data/releases.json")
         .then(data => {
             const template = document.getElementById("featured-release-template");
             const release = data.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))[0];
@@ -465,8 +445,7 @@ function renderFeaturedRelease(container) {
 
 // PRESS TRACKS
 function renderPressTracks(container) {
-    return fetch("data/press-tracks.json")
-        .then(response => response.json())
+    return fetchJSON("data/press-tracks.json")
         .then(tracks => {
             const template = document.getElementById("press-track-template");
             container.innerHTML = "";
@@ -676,14 +655,16 @@ document.addEventListener("partials:loaded", () => {
     const menu = document.querySelector(".mobile-menu");
     if (!toggle || !menu) return;
 
-    const icon = toggle.querySelector("i");
+    const barsIcon = toggle.querySelector(".icon-bars");
+    const xmarkIcon = toggle.querySelector(".icon-xmark");
 
     const closeMenu = () => {
         menu.classList.remove("is-open");
         toggle.setAttribute("aria-expanded", "false");
         menu.inert = true;
         menu.setAttribute("aria-hidden", "true");
-        if (icon) icon.className = "fa-solid fa-bars";
+        barsIcon?.classList.remove("hide");
+        xmarkIcon?.classList.add("hide");
     };
 
     const openMenu = () => {
@@ -691,7 +672,8 @@ document.addEventListener("partials:loaded", () => {
         menu.inert = false;
         menu.setAttribute("aria-hidden", "false");
         toggle.setAttribute("aria-expanded", "true");
-        if (icon) icon.className = "fa-solid fa-xmark";
+        barsIcon?.classList.add("hide");
+        xmarkIcon?.classList.remove("hide");
     };
 
     toggle.addEventListener("click", () => {
@@ -844,8 +826,7 @@ document.addEventListener("click", (event) => {
 let pressBioData = null;
 
 function renderPressBio(container) {
-    return fetch("data/press-bio.json")
-        .then(response => response.json())
+    return fetchJSON("data/press-bio.json")
         .then(data => {
             pressBioData = data;
             applyPressLanguage();
@@ -915,8 +896,7 @@ document.addEventListener("click", (event) => {
 });
 
 function renderPressPhotos(container) {
-    return fetch("data/press-photos.json")
-        .then(response => response.json())
+    return fetchJSON("data/press-photos.json")
         .then(photos => {
             const template = document.getElementById("press-photo-template");
             container.innerHTML = "";
@@ -947,8 +927,7 @@ function getSiteLanguage() {
 }
 
 function loadLanguageStrings() {
-    return fetch("data/language.json")
-        .then(response => response.json())
+    return fetchJSON("data/language.json")
         .then(data => {
             languageStrings = data;
             applyLanguageStrings();
