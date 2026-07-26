@@ -976,7 +976,7 @@ let lightboxOriginTrigger = null; // remembers which element to return focus to
 document.addEventListener("click", (event) => {
     const img = event.target.closest('[data-render="gallery"] img');
     if (img) {
-        openLightbox(img);
+        openLightbox(img, img.replace('_thumbnail', ''));
         return;
     }
     closeLightbox();
@@ -1007,11 +1007,11 @@ document.addEventListener("keydown", (event) => {
     const img = event.target.closest('[data-render="gallery"] img');
     if (img && (event.key === "Enter" || event.key === " ")) {
         event.preventDefault();
-        openLightbox(img);
+        openLightbox(img, img.src.replace('_thumbnail', ''));
     }
 });
 
-function openLightbox(sourceImg) {
+function openLightbox(sourceImg, sourceUrl = null) {
     const lightbox = document.getElementById("lightbox");
     const image = document.getElementById("lightbox-image");
     if (!lightbox || !image) return;
@@ -1019,7 +1019,7 @@ function openLightbox(sourceImg) {
     lightboxOriginRect = sourceImg.getBoundingClientRect();
     lightboxOriginTrigger = sourceImg;
 
-    image.src = sourceImg.src;
+    image.src = sourceUrl ?? sourceImg.src;
     image.alt = sourceImg.alt || "";
     lightbox.classList.remove("hide");
     lightbox.focus();
