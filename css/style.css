@@ -83,7 +83,7 @@ section {
     display: flex;
     flex-direction: column;
     text-align: center;
-    padding: clamp(var(--space-sm), 10%, var(--space-xl))
+    padding: clamp(var(--space-md), 5%, var(--space-xl)) clamp(var(--space-sm), 10%, var(--space-lg)) 
 }
 
 .stack {
@@ -155,8 +155,13 @@ h2 {
     font-size: clamp(2.5rem, 7vw, 5rem);
     margin-bottom: var(--space-lg);
 }
-
 h3 { 
+    font-family: var(--font-display);
+    font-weight: var(--weight-semibold);
+    font-size: clamp(1.5rem, 3vw, 2rem); 
+}
+
+strong {
     font-family: var(--font-display);
     font-weight: var(--weight-semibold);
     font-size: clamp(1.5rem, 3vw, 2rem); 
@@ -223,7 +228,7 @@ THEMES
 ============================================================= */
 
 button {
-    margin: var(--space-sm);
+    margin-top: var(--space-sm);
     padding: var(--space-sm);
     background: var(--primary);
     color: var(--text-light);

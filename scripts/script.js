@@ -368,7 +368,7 @@ function renderVideos(container) {
             const render = (video) => {
                 const clone = template.content.cloneNode(true);
                 const embed = clone.querySelector('[data-field="embed"]');
-                embed.src = `https://www.youtube.com/embed/${video.videoId}`;
+                embed.src = `https://www.youtube-nocookie.com/embed/${video.videoId}`;
                 embed.title = video.title;
                 return clone;
             };
@@ -450,7 +450,10 @@ function renderFeaturedRelease(container) {
             cover.alt = `${release.title} cover art`;
             clone.querySelector('[data-field="year"]').textContent = release.year;
             clone.querySelector('[data-field="title"]').textContent = release.title;
-            clone.querySelectorAll('[data-field="link"]')?.forEach(a => a.href = release.url);
+            clone.querySelectorAll('[data-field="link"]')?.forEach(a => {
+                a.href = release.url
+                a.setAttribute("aria-label", `Listen to ${release.title}`);
+            });
 
             container.appendChild(clone);
         })
