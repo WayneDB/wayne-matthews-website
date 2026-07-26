@@ -1087,6 +1087,7 @@ function closeLightbox() {
         image.style.transition = "none";
         image.style.transform = "";
         image.style.transformOrigin = "";
+        image.src = "";
         void image.offsetWidth;
         image.style.transition = "";
         image.removeEventListener("transitionend", onDone);
