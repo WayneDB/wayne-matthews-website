@@ -194,7 +194,6 @@ h3 {
 p, a, input { font-family: var(--font-body); }
 
 a {
-    color: var(--text-light);
     text-decoration: none;
 }
 
@@ -223,6 +222,30 @@ THEMES
     background: var(--background-dark);
     color: var(--text-light);
 }
+
+.theme-dark h1 { color: var(--text-light); }
+.theme-dark h2 { color: var(--text-light); }
+.theme-dark h3 { color: var(--text-light); }
+.theme-dark p { color: var(--text-light); }
+.theme-dark i { color: var(--text-light); }
+.theme-dark i:hover { color: var(--secondary); }
+.theme-dark a { color: var(--secondary); }
+.theme-dark .eyebrow { color: var(--secondary); }
+
+.theme-light {
+    background: var(--background-light);
+    color: var(--text-dark);
+}
+
+.theme-light h1 { color: var(--text-dark); }
+.theme-light h2 { color: var(--text-dark); }
+.theme-light h3 { color: var(--text-dark); }
+.theme-light p { color: var(--text-dark); }
+.theme-light i { color: var(--text-dark); }
+.theme-light i:hover { color: var(--primary); }
+.theme-light a { color: var(--primary); }
+.theme-light .eyebrow { color: var(--primary); }
+
 
 /* =============================================================
    BUTTONS
@@ -346,13 +369,6 @@ button:hover {
     max-height: 90vh;
     object-fit: contain;
     transition: transform var(--transition);
-}
-
-.close-button {
-    position: absolute;
-    top: var(--space-md);
-    right: var(--space-md);
-    font-size: 1.8rem;
 }
 
 /* =============================================================
@@ -533,7 +549,7 @@ footer {
     justify-content: center;
     gap: var(--space-sm);
     padding: var(--space-sm);
-    background: var(--shadow);
+    background-color: rgba(0,0,0,0.8);
     border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
     transition: transform var(--transition);
 }
@@ -548,7 +564,6 @@ footer {
 }
 
 .cookie-banner a {
-    color: var(--secondary);
     text-decoration: underline;
 }
 

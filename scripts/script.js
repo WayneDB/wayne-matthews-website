@@ -1,3 +1,10 @@
+function shakeElement(el) {
+    if (!el) return;
+    el.classList.remove("shake");
+    void el.offsetWidth; // force reflow so the animation can replay
+    el.classList.add("shake");
+}
+
 /* =========================================================
    COMPONENT LOADING
    Pulls in any [data-component] block from /blocks, recursively,
@@ -716,13 +723,25 @@ document.addEventListener("partials:loaded", () => {
 });
 
 /* =========================================================
-   COOKIES
+   COOKIE CONSENT
 ========================================================= */
 
-const COOKIE_CONSENT_KEY = "cookie-consent"; // "accepted" | "declined"
+const COOKIE_CONSENT_KEY = "cookie-consent"; // JSON: { functional: bool, analytics: bool }
 
 function getCookieConsent() {
-    return localStorage.getItem(COOKIE_CONSENT_KEY);
+    try {
+        return JSON.parse(localStorage.getItem(COOKIE_CONSENT_KEY));
+    } catch {
+        return null;
+    }
+}
+
+function hasConsentDecision() {
+    return getCookieConsent() !== null;
+}
+
+function saveCookieConsent(consent) {
+    localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consent));
 }
 
 function pageNeedsSender() {
@@ -737,60 +756,87 @@ function loadSenderScript() {
     document.head.appendChild(script);
 }
 
+function loadAnalyticsScript() {
+    if (document.getElementById("ga-script")) return;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    gtag("js", new Date());
+    gtag("config", "G-TKDZCT3KG8", { anonymize_ip: true });
+
+    const script = document.createElement("script");
+    script.id = "ga-script";
+    script.async = true;
+    script.src = "https://www.googletagmanager.com/gtag/js?id=G-TKDZCT3KG8";
+    document.head.appendChild(script);
+}
+
+function deleteAnalyticsCookies() {
+    document.cookie.split(";").forEach(c => {
+        const name = c.split("=")[0].trim();
+        if (name.startsWith("_ga")) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        }
+    });
+}
+
+function applyCookieConsent() {
+    const consent = getCookieConsent();
+    if (!consent) return;
+
+    if (consent.functional && pageNeedsSender()) loadSenderScript();
+
+    if (consent.analytics) {
+        loadAnalyticsScript();
+    } else {
+        deleteAnalyticsCookies();
+    }
+}
+
 function showCookieBanner() {
     const banner = document.getElementById("cookie-banner");
     if (!banner) return;
+
+    const consent = getCookieConsent();
+    const functionalBox = document.getElementById("consent-functional");
+    const analyticsBox = document.getElementById("consent-analytics");
+    if (functionalBox) functionalBox.checked = consent?.functional ?? false;
+    if (analyticsBox) analyticsBox.checked = consent?.analytics ?? false;
+
     const wasHidden = banner.classList.contains("hide");
     banner.classList.remove("hide");
-    if (!wasHidden) {
-        banner.classList.remove("shake");
-        void banner.offsetWidth; // force reflow so the animation can replay
-        banner.classList.add("shake");
-    }
 }
 
 function hideCookieBanner() {
     document.getElementById("cookie-banner")?.classList.add("hide");
 }
 
-function applyCookieConsent() {
-    if (getCookieConsent() === "accepted" && pageNeedsSender()) {
-        loadSenderScript();
-    }
-}
-
 document.addEventListener("partials:loaded", () => {
     if (!document.getElementById("cookie-banner")) return;
 
-    applyCookieConsent(); // no auto-show on load anymore
+    if (!hasConsentDecision()) {
+        showCookieBanner();
+    } else {
+        applyCookieConsent();
+    }
 
-    document.getElementById("cookie-accept")?.addEventListener("click", () => {
-        localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+    document.getElementById("cookie-save")?.addEventListener("click", () => {
+        const consent = {
+            functional: document.getElementById("consent-functional")?.checked ?? false,
+            analytics: document.getElementById("consent-analytics")?.checked ?? false,
+        };
+        saveCookieConsent(consent);
         hideCookieBanner();
         applyCookieConsent();
-        resumePendingSubscribeClick();
     });
 
     document.getElementById("cookie-decline")?.addEventListener("click", (event) => {
         event.preventDefault();
-        localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
+        saveCookieConsent({ functional: false, analytics: false });
         hideCookieBanner();
         applyCookieConsent();
-        pendingSubscribeTarget = null; // don't resume on decline
     });
 });
 
-let pendingSubscribeTarget = null;
-
-function resumePendingSubscribeClick() {
-    if (!pendingSubscribeTarget) return;
-    const target = pendingSubscribeTarget;
-    pendingSubscribeTarget = null;
-    // small delay lets Sender's script finish initializing before we replay the click
-    setTimeout(() => target.click(), 400);
-}
-
-// Reopen banner from footer / links-page "Cookie Settings" link (delegated, loads async)
 document.addEventListener("click", (event) => {
     if (event.target.closest("#cookie-settings")) {
         event.preventDefault();
@@ -801,11 +847,12 @@ document.addEventListener("click", (event) => {
 document.addEventListener("click", (event) => {
     const btn = event.target.closest("#subscribebutton");
     if (!btn) return;
-    if (getCookieConsent() !== "accepted") {
+    const consent = getCookieConsent();
+    if (!consent?.functional) {
         event.preventDefault();
         event.stopPropagation();
-        pendingSubscribeTarget = btn;
         showCookieBanner();
+        shakeElement(document.getElementById("consent-functional")?.closest("p"));
     }
 }, true);
 
@@ -851,6 +898,9 @@ function applyPressLanguage() {
     const list = document.createElement("ul");
     list.style.marginLeft = "var(--space-md)";
     list.style.marginTop = "var(--space-xs)";
+    list.style.display = "flex";
+    list.style.flexDirection = "column";
+    list.style.gap = "var(--space-xs)";
 
     content.mentions.forEach(mention => {
         const li = document.createElement("li");
