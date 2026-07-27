@@ -798,13 +798,26 @@ document.addEventListener("partials:loaded", () => {
         hideCookieBanner();
         applyCookieConsent();
     });
+
+    document.getElementById("cookie-accept-all")?.addEventListener("click", () => {
+        saveCookieConsent({ functional: true, analytics: true });
+        hideCookieBanner();
+        applyCookieConsent();
+    });
 });
+
 
 document.addEventListener("click", (event) => {
     if (event.target.closest("#cookie-settings")) {
         event.preventDefault();
         showCookieBanner();
     }
+});
+
+document.getElementById("cookie-decline")?.addEventListener("click", () => {
+    saveCookieConsent({ functional: false, analytics: false });
+    hideCookieBanner();
+    applyCookieConsent();
 });
 
 document.addEventListener("click", (event) => {
@@ -815,7 +828,7 @@ document.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
         showCookieBanner();
-        shakeElement(document.getElementById("consent-functional")?.closest("p"));
+        shakeElement(document.getElementById("consent-functional")?.closest("label"));
     }
 }, true);
 

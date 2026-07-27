@@ -247,6 +247,18 @@ button:hover {
     color: var(--text-dark);
 }
 
+.btn-secondary {
+    background: transparent;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent) !important;
+    color: var(--text-light);
+}
+
+.btn-secondary:hover {
+    background: color-mix(in srgb, currentColor 10%, transparent);
+    color: var(--text-light);
+    transform: none;
+}
+
 .icon {
     width: 1.3rem;
     height: 1.3rem;
