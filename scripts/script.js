@@ -1177,5 +1177,12 @@ document.getElementById("copy-bio-btn")?.addEventListener("click", () => {
     const bio = document.getElementById("bio-short")
     if(!bio) return;
 
-    navigator.clipboard.writeText(bio.textContent);
+    navigator.clipboard.writeText(bio.textContent)
+        .then(() => {
+            const btn = document.getElementById("copy-bio-btn");
+            btn.textContent += ' 📋';
+            setTimeout(() => {
+                btn.textContent = btn.textContent.replace(' 📋', '');
+            }, 2000);
+        });
 });

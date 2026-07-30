@@ -135,7 +135,7 @@ section {
 
 .flip-card:has(.card:hover) {
     position: relative;
-    z-index: 100;
+    z-index: 50;
 }
 
 /* =============================================================
@@ -313,7 +313,7 @@ button:hover {
     transition: var(--transition);
     border-color: var(--secondary);
     filter: drop-shadow(5px 5px 10px var(--shadow));
-    z-index: 100;
+    z-index: 50;
 }
 
 .disabled {
