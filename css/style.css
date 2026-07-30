@@ -167,9 +167,10 @@ strong {
     font-size: clamp(1.5rem, 3vw, 2rem); 
 }
 
-p, a, input { font-family: var(--font-body); }
+p, input { font-family: var(--font-body); }
 
 a {
+    font-family: var(--font-body);
     text-decoration: none;
 }
 
@@ -270,13 +271,19 @@ button:hover {
     background: none;
     border: none;
     margin: 0;
-    padding: 0;
+    padding: 12px;
     width: auto;
     color: var(--text-light);
     font-size: 1.3rem;
     filter: drop-shadow(0 2px 5px var(--shadow));
     transition: color var(--transition), transform var(--transition);
     cursor: pointer;
+}
+
+.icon-button:hover {
+    background: none;
+    color: var(--secondary);
+    transform: translateY(-3px) scale(120%);
 }
 
 .toggle {
@@ -287,13 +294,10 @@ button:hover {
 
 .toggle.active {
     background: var(--primary);
+    color: var(--text-light);
     border-color: var(--primary) !important;
-}
-
-.icon-button:hover {
-    background: none;
-    color: var(--secondary);
-    transform: translateY(-3px) scale(120%);
+    transform: scale(100%);
+    cursor: default;
 }
 
 .card {
@@ -450,7 +454,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    padding: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
     gap: var(--space-md);
     display: flex;
     align-items: center;
@@ -489,7 +493,7 @@ footer {
 
 .main-nav {
     display: flex;
-    gap: 45px;
+    gap: var(--space-sm);
 }
 
 .main-nav a {
@@ -497,6 +501,7 @@ footer {
     text-decoration: none;
     text-transform: uppercase;
     font-size: .8rem;
+    padding: var(--space-sm);
     font-weight: var(--weight-medium);
     letter-spacing: 2.5px;
     text-shadow: 0 2px 8px var(--shadow);
@@ -506,19 +511,20 @@ footer {
 .socials {
     justify-self: end;
     display: flex;
-    gap: 22px;
 }
 
 .header-logo a:hover,
 .main-nav a:hover{
     color: var(--secondary);
     transform: scale(120%);
+    transform: translateY(-3px);
 }
 
 .mobile-menu {
     display: none;
     overscroll-behavior: contain;
     overflow: hidden;
+    gap: 0px;
 }
 
 .menu-toggle {
@@ -691,16 +697,18 @@ footer {
 .link-btn-eyebrow {
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-size: .65rem;
+    font-size: clamp(.2rem, 3vw,.65rem);
     font-weight: var(--weight-medium);
     color: var(--secondary);
     transition: color var(--transition);
+    text-align: left;
 }
 
 .link-btn-label {
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: clamp(1rem, 2vw, 1.15rem);
     font-weight: var(--weight-semibold);
+    text-align: left;
 }
 
 .divider {

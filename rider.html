@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wayne Matthews | Technical Rider</title>
+    <title>Wayne Matthews | Event Kit</title>
 
-    <meta name="description" content="Technical rider and stage plot for Wayne Matthews.">
+    <meta name="description" content="Event kit for Wayne Matthews — technical rider, stage plot, photos, and bio for booked shows.">
     <meta name="robots" content="noindex">
 
     <link rel="icon" type="image/png" href="images/favicon.png">
@@ -25,33 +25,39 @@
         <div class="header-logo">
             <a href="index.html">Wayne Matthews</a>
         </div>
+        <div class="row" style="width: auto; align-self: flex-end;">
+                <button data-language="en" class="toggle">EN</button>
+                <button data-language="nl" class="toggle">NL</button>
+        </div>
     </header>
 
     <main>
         <section style="text-align: left;">
-            <h1>Technical Rider</h1>
-            <p class="muted" style="margin-top: var(--space-xs);">Solo acoustic setup — guitar, vocal, looper.</p>
-
-            <div class="space-md"></div>
-            <p>Below is the full technical rider and stage plot. Please share both with your sound engineer ahead of the show. Questions — <a href="mailto:booking@wayne-matthews.com">booking@wayne-matthews.com</a>.</p>
+            <h1 data-string="eventkit">Event Kit</h1>
 
             <div class="space-lg"></div>
 
-            <h3>Rider</h3>
-            <div class="stack gap-sm">
-                <a href="files/Wayne Matthews - Technical Rider (Guitar).pdf" download class="link-btn fit-content">
-                    <span class="link-btn-text">
-                        <span class="link-btn-eyebrow">Download</span>
-                        <span class="link-btn-label">Technical Rider - Guitar only (PDF)</span>
-                    </span>
-                </a>
-                <a href="files/Wayne Matthews - Technical Rider (Guitar).pdf" download class="link-btn fit-content">
-                    <span class="link-btn-text">
-                        <span class="link-btn-eyebrow">Download</span>
-                        <span class="link-btn-label">Technical Rider - Guitar only (PDF)</span>
-                    </span>
-                </a>
-            </div>
+            <h3 data-string="technicalRider">Technical rider</h3>
+            <p data-string="riderHint">You can download the full technical rider and stage plot here. Please share both with your sound engineer ahead of the show.</p>
+            <button style="align-self: flex-start;" type="button" id="download-rider-btn">Download</button>
+            
+            <div class="space-lg"></div>
+            
+            <h3 data-string="biography">Biography</h3>
+            <p data-string="shortBioHint">Short bio — for your event program or listing</p>
+            <p data-render="bio-short" id="bio-short" style="max-width: 700px;"></p>
+            <button style="align-self: flex-start;" type="button" id="copy-bio-btn" data-string="copy">Copy</button>
+            
+            <div class="space-lg"></div>
+
+            <h3 data-string="photos">Photos</h3>
+            <p class="muted" data-string="photosHint">Click a photo to download.</p>
+            <div class="space-sm"></div>
+            <div class="row gap-md" data-render="press-photos"></div>
+
+            <h3 data-string="questions">Questions</h3>
+            <div class="space-sm"></div>
+            <a href="mailto:booking@wayne-matthews.com">booking@wayne-matthews.com</a>
         </section>
     </main>
 

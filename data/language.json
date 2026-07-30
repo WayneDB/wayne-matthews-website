@@ -1,28 +1,50 @@
 {
     "en": {
-        "presskit": "Press Kit",
         "singerSongwriter": "Singer • Songwriter",
         "recognition": "Recognition",
         "photos": "Photos",
-        "photosHint": "Click a photo to download.",
         "music": "Music",
         "upcomingShows": "Upcoming Shows",
-        "noShows": "There are currently no shows planned.",
         "contact": "Contact",
         "press": "Press & media",
-        "booking": "Booking"
+        "booking": "Booking",
+        "questions": "Questions",
+        "technicalRider": "Technical Rider",
+        "biography": "Bio",
+        
+        "presskit": "Press Kit",
+        "eventkit": "Event Kit",
+        
+        "riderHint": "You can download the full technical rider and stage plot here. Please share this with your sound engineer ahead of the show.",
+        "photosHint": "Click a photo to download.",
+        "shortBioHint": "Short bio — for your event program or listing",
+        "noShows": "There are currently no shows planned.",
+
+        "copy": "Copy",
+        "copied": "Copied!"
     },
     "nl": {
-        "presskit": "Perskit",
         "singerSongwriter": "Singer • Songwriter",
         "recognition": "Vermeldingen",
         "photos": "Foto's",
-        "photosHint": "Klik op een foto om te downloaden.",
         "music": "Muziek",
         "upcomingShows": "Optredens",
-        "noShows": "Er staan momenteel geen optredens gepland.",
         "contact": "Contact",
         "press": "Pers & media",
-        "booking": "Boekingen"
+        "booking": "Boekingen",
+        "questions": "Vragen",
+        "technicalRider": "Technische Rider",
+        "biography": "Bio",
+        
+        "presskit": "Perskit",
+        "eventkit": "Evenementenkit",
+        
+        "riderHint": "Hier kan je de volledige technische rider en stageplot downloaden. Bezorg dit aan jullie geluidstechnicus voor de show.",
+        "photosHint": "Klik op een foto om te downloaden.",
+        "shortBioHint": "Korte bio — voor jullie programma of aankondiging",
+        "noShows": "Er staan momenteel geen optredens gepland.",
+
+        "copy": "Kopieer",
+        "copied": "Gekopieerd!"
     }
 }

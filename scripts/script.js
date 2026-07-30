@@ -331,6 +331,28 @@ function initCarousel(container, items, renderItem) {
     }
 }
 
+function setLanguage(language) {
+    const url = new URL(window.location);
+    url.searchParams.set("lang", language);
+
+    window.history.replaceState({}, "", url);
+
+    applyLanguage();
+}
+
+function getLanguage() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("lang") || "en";
+}
+
+function getLocalizedString(key, default_value) {
+    fetchJSON('data/language.json')
+        .then(data => {
+            var strings = data[getLanguage()] || data.en;
+            console.log(strings);
+            return strings[key] || default_value;
+        });
+}
 
 document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="releases"]').forEach(container => { renderReleases(container); });
@@ -338,9 +360,9 @@ document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="gallery"]').forEach(container => { renderGallery(container); });
     document.querySelectorAll('[data-render="featured-videos"]').forEach(container => { renderVideos(container); });
     document.querySelectorAll('[data-render="tour-dates"]').forEach(container => { renderTourDates(container); });
-
-    document.querySelectorAll('[data-render="press-bio"]').forEach(container => { renderPressBio(container); });
     document.querySelectorAll('[data-render="press-photos"]').forEach(container => { renderPressPhotos(container); });
+    
+    applyLanguage();
 });
 
 function renderVideos(container) {
@@ -836,13 +858,19 @@ document.addEventListener("click", (event) => {
    PRESS KIT
 ========================================================= */
 
-let pressBioData = null;
-
-function renderPressBio(container) {
-    return fetchJSON("data/press-bio.json")
+function renderBioFull(container) {
+    return fetchJSON("data/bio.json")
         .then(data => {
-            pressBioData = data;
-            applyPressLanguage();
+            const lang = getLanguage();
+            const content = data[lang] || data.en;
+            
+            container.innerHTML = "";
+            content.full.forEach(text => {
+                const p = document.createElement("p");
+                p.textContent = text;
+                p.style.marginTop = "var(--space-xs)";
+                container.appendChild(p);
+            });
         })
         .catch(error => {
             console.error("Error loading press bio:", error);
@@ -850,62 +878,82 @@ function renderPressBio(container) {
         });
 }
 
-function applyPressLanguage() {
-    if (!pressBioData) return;
-    const lang = getSiteLanguage();
-    const content = pressBioData[lang] || pressBioData.en;
+function renderBioShort(container) {
+    return fetchJSON("data/bio.json")
+        .then(data => {
+            const lang = getLanguage();
+            const content = data[lang] || data.en;
+            
+            container.innerHTML = "";
+            const p = document.createElement("p");
+            p.textContent = content.short;
+            container.appendChild(p);
+        })
+        .catch(error => {
+            console.error("Error loading press bio:", error);
+            showLoadError(container);
+        });
+}
 
-    const bioContainer = document.querySelector('[data-render="press-bio"]');
-    if (!bioContainer) return;
+function renderBioMentions(container) {
+    return fetchJSON("data/bio.json")
+        .then(data => {
+            const lang = getLanguage();
+            const content = data[lang] || data.en;
+            
+            container.innerHTML = null;
 
-    bioContainer.innerHTML = "";
-    content.paragraphs.forEach(text => {
-        const p = document.createElement("p");
-        p.textContent = text;
-        p.style.marginTop = "var(--space-xs)";
-        bioContainer.appendChild(p);
-    });
+            const list = document.createElement("ul");
+            list.style.marginLeft = "var(--space-md)";
+            list.style.marginTop = "var(--space-xs)";
+            list.style.display = "flex";
+            list.style.flexDirection = "column";
+            list.style.gap = "var(--space-xs)";
 
-    const container = document.querySelector('[data-render="press-mentions"]');
-    if (!container) return;
+            content.mentions.forEach(mention => {
+                const li = document.createElement("li");
+                if (mention.url) {
+                    const a = document.createElement("a");
+                    a.href = mention.url;
+                    a.target = "_blank";
+                    a.textContent = mention.text;
+                    li.appendChild(a);
+                } else {
+                    li.textContent = mention.text;
+                }
+                list.appendChild(li);
+            });
+            container.appendChild(list);
+        })
+        .catch(error => {
+            console.error("Error loading press bio:", error);
+            showLoadError(container);
+        });
+}
 
-    container.innerHTML = "";
-    const list = document.createElement("ul");
-    list.style.marginLeft = "var(--space-md)";
-    list.style.marginTop = "var(--space-xs)";
-    list.style.display = "flex";
-    list.style.flexDirection = "column";
-    list.style.gap = "var(--space-xs)";
-
-    content.mentions.forEach(mention => {
-        const li = document.createElement("li");
-        if (mention.url) {
-            const a = document.createElement("a");
-            a.href = mention.url;
-            a.target = "_blank";
-            a.textContent = mention.text;
-            a.style.textDecoration = "underline";
-            li.appendChild(a);
-        } else {
-            li.textContent = mention.text;
-        }
-        list.appendChild(li);
-    });
-
-    container.appendChild(list);
-
+function applyLanguage() {
+    const language = getLanguage();
+    
     document.querySelectorAll("[data-language]").forEach(btn => {
-        const isActive = btn.dataset.language === lang;
+        const isActive = btn.dataset.language === language;
         btn.classList.toggle("active", isActive);
         btn.setAttribute("aria-pressed", isActive);
     });
+    
+    applyLanguageStrings();
+    applyBioLanguage();
+}
+
+function applyBioLanguage(){
+    document.querySelectorAll('[data-render="bio-full"]').forEach(container => { renderBioFull(container); });
+    document.querySelectorAll('[data-render="bio-short"]').forEach(container => { renderBioShort(container); });
+    document.querySelectorAll('[data-render="bio-mentions"]').forEach(container => { renderBioMentions(container); });
 }
 
 document.addEventListener("click", (event) => {
     const btn = event.target.closest("[data-language]");
     if (!btn) return;
-    localStorage.setItem("language", btn.dataset.language);
-    applyPressLanguage();
+    setLanguage(btn.dataset.language);
 });
 
 function renderPressPhotos(container) {
@@ -933,51 +981,25 @@ function renderPressPhotos(container) {
    LANGUAGE (site-wide strings — reusable anywhere)
 ========================================================= */
 
-let languageStrings = null;
-
-function getSiteLanguage() {
-    return localStorage.getItem("site-lang") || "en";
-}
-
-function loadLanguageStrings() {
+function applyLanguageStrings() {
     return fetchJSON("data/language.json")
         .then(data => {
-            languageStrings = data;
-            applyLanguageStrings();
+            const lang = getLanguage();
+            const strings = data[lang] || data.en;
+
+            document.documentElement.lang = lang;
+
+            document.querySelectorAll("[data-string]").forEach(el => {
+                const value = strings[el.dataset.string];
+                if (value) el.textContent = value;
+            });
+
+            document.querySelectorAll("[data-language]").forEach(btn => {
+                btn.classList.toggle("active-lang", btn.dataset.language === lang);
+            });
         })
         .catch(error => console.error("Error loading language strings:", error));
 }
-
-function applyLanguageStrings() {
-    if (!languageStrings) return;
-    const lang = getSiteLanguage();
-    const strings = languageStrings[lang] || languageStrings.en;
-
-    document.documentElement.lang = lang;
-
-    document.querySelectorAll("[data-string]").forEach(el => {
-        const value = strings[el.dataset.string];
-        if (value) el.textContent = value;
-    });
-
-    document.querySelectorAll("[data-language]").forEach(btn => {
-        btn.classList.toggle("active-lang", btn.dataset.language === lang);
-    });
-}
-
-document.addEventListener("partials:loaded", () => {
-    if (document.querySelector("[data-string]")) {
-        loadLanguageStrings();
-    }
-});
-
-document.addEventListener("click", (event) => {
-    const btn = event.target.closest("[data-language]");
-    if (!btn) return;
-    localStorage.setItem("site-lang", btn.dataset.language);
-    applyLanguageStrings();
-    applyPressLanguage(); // re-render bio-specific content, if present
-});
 
 /* =========================================================
    LIGHT BOX
@@ -1108,3 +1130,52 @@ function closeLightbox() {
     };
     image.addEventListener("transitionend", onDone, { once: true });
 }
+
+/* =========================================================
+   RIDER
+========================================================= */
+
+function getRiderPdfPath(setup) {
+    return `files/wayne-matthews-tech-rider-${setup}.pdf`;
+}
+
+async function downloadRiderPdf(requestedSetup) {
+    const fallback = "looper";
+    const candidate = requestedSetup || fallback;
+
+    const tryFetch = async (setup) => {
+        const path = getRiderPdfPath(setup);
+        const response = await fetch(path);
+        if (!response.ok) throw new Error(`Not found: ${path}`);
+        return { setup, blob: await response.blob() };
+    };
+
+    let result;
+    try {
+        result = await tryFetch(candidate);
+    } catch {
+        result = await tryFetch(fallback);
+    }
+
+    const blobUrl = URL.createObjectURL(result.blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = `wayne-matthews-tech-rider-${result.setup}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(blobUrl);
+}
+
+document.getElementById("download-rider-btn")?.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedSetup = params.get("setup");
+    downloadRiderPdf(requestedSetup);
+});
+
+document.getElementById("copy-bio-btn")?.addEventListener("click", () => {
+    const bio = document.getElementById("bio-short")
+    if(!bio) return;
+
+    navigator.clipboard.writeText(bio.textContent);
+});
