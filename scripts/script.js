@@ -7,8 +7,6 @@ function shakeElement(el) {
 
 /* =========================================================
    COMPONENT LOADING
-   Pulls in any [data-component] block from /blocks, recursively,
-   then announces "partials:loaded" once everything is in the DOM.
 ========================================================= */
 
 async function loadComponents(container = document) {
@@ -346,10 +344,9 @@ function getLanguage() {
 }
 
 function getLocalizedString(key, default_value) {
-    fetchJSON('data/language.json')
+    return fetchJSON('data/language.json')
         .then(data => {
             var strings = data[getLanguage()] || data.en;
-            console.log(strings);
             return strings[key] || default_value;
         });
 }
@@ -411,13 +408,15 @@ function renderGallery(container) {
 }
 
 // RELEASES
+function getSortedReleases() {
+    return fetchJSON("data/releases.json")
+        .then(data => [...data].sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)));
+}
+
 function renderReleases(container) {
-    fetchJSON("data/releases.json")
-        .then(data => {
+    getSortedReleases()
+        .then(releases => {
             const template = document.getElementById("release-card-template");
-            const releases = [...data].sort(
-                (a, b) => new Date(b.releaseDate) - new Date(a.releaseDate)
-            );
 
             const renderCard = (release) => {
                 const clone = template.content.cloneNode(true);
@@ -439,12 +438,11 @@ function renderReleases(container) {
         });
 }
 
-// FEATURED RELEASE
 function renderFeaturedRelease(container) {
-    fetchJSON("data/releases.json")
-        .then(data => {
+    getSortedReleases()
+        .then(releases => {
             const template = document.getElementById("featured-release-template");
-            const release = data.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate))[0];
+            const release = releases[0];
 
             const clone = template.content.cloneNode(true);
             const cover = clone.querySelector('[data-field="cover"]');
@@ -461,26 +459,6 @@ function renderFeaturedRelease(container) {
         })
         .catch(error => {
             console.error("Error loading featured release:", error);
-            showLoadError(container);
-        });
-}
-
-// PRESS TRACKS
-function renderPressTracks(container) {
-    return fetchJSON("data/press-tracks.json")
-        .then(tracks => {
-            const template = document.getElementById("press-track-template");
-            container.innerHTML = "";
-            tracks.forEach(track => {
-                const clone = template.content.cloneNode(true);
-                const embed = clone.querySelector('[data-field="embed"]');
-                embed.src = `https://open.spotify.com/embed/album/${track.spotifyId}?utm_source=generator&theme=0`;
-                embed.title = track.title;
-                container.appendChild(clone);
-            });
-        })
-        .catch(error => {
-            console.error("Error loading press tracks:", error);
             showLoadError(container);
         });
 }
@@ -828,7 +806,6 @@ document.addEventListener("partials:loaded", () => {
     });
 });
 
-
 document.addEventListener("click", (event) => {
     if (event.target.closest("#cookie-settings")) {
         event.preventDefault();
@@ -836,21 +813,15 @@ document.addEventListener("click", (event) => {
     }
 });
 
-document.getElementById("cookie-decline")?.addEventListener("click", () => {
-    saveCookieConsent({ functional: false, analytics: false });
-    hideCookieBanner();
-    applyCookieConsent();
-});
-
 document.addEventListener("click", (event) => {
-    const btn = event.target.closest("#subscribebutton");
-    if (!btn) return;
-    const consent = getCookieConsent();
-    if (!consent?.functional) {
-        event.preventDefault();
-        event.stopPropagation();
-        showCookieBanner();
-        shakeElement(document.getElementById("consent-functional")?.closest("label"));
+    if(event.target.closest("#subscribebutton")) {
+        const consent = getCookieConsent();
+        if (!consent?.functional) {
+            event.preventDefault();
+            event.stopPropagation();
+            showCookieBanner();
+            shakeElement(document.getElementById("consent-functional")?.closest("label"));
+        }
     }
 }, true);
 
@@ -858,12 +829,14 @@ document.addEventListener("click", (event) => {
    PRESS KIT
 ========================================================= */
 
-function renderBioFull(container) {
+function getLocalizedBio() {
     return fetchJSON("data/bio.json")
-        .then(data => {
-            const lang = getLanguage();
-            const content = data[lang] || data.en;
-            
+        .then(data => data[getLanguage()] || data.en);
+}
+
+function renderBioFull(container) {
+    return getLocalizedBio()
+        .then(content => {
             container.innerHTML = "";
             content.full.forEach(text => {
                 const p = document.createElement("p");
@@ -879,11 +852,8 @@ function renderBioFull(container) {
 }
 
 function renderBioShort(container) {
-    return fetchJSON("data/bio.json")
-        .then(data => {
-            const lang = getLanguage();
-            const content = data[lang] || data.en;
-            
+    return getLocalizedBio()
+        .then(content => {
             container.innerHTML = "";
             const p = document.createElement("p");
             p.textContent = content.short;
@@ -896,13 +866,9 @@ function renderBioShort(container) {
 }
 
 function renderBioMentions(container) {
-    return fetchJSON("data/bio.json")
-        .then(data => {
-            const lang = getLanguage();
-            const content = data[lang] || data.en;
-            
+    return getLocalizedBio()
+        .then(content => {
             container.innerHTML = null;
-
             const list = document.createElement("ul");
             list.style.marginLeft = "var(--space-md)";
             list.style.marginTop = "var(--space-xs)";
@@ -1174,15 +1140,17 @@ document.getElementById("download-rider-btn")?.addEventListener("click", () => {
 });
 
 document.getElementById("copy-bio-btn")?.addEventListener("click", () => {
-    const bio = document.getElementById("bio-short")
-    if(!bio) return;
+    const bio = document.getElementById("bio-short");
+    if (!bio) return;
 
-    navigator.clipboard.writeText(bio.textContent)
-        .then(() => {
-            const btn = document.getElementById("copy-bio-btn");
-            btn.textContent += ' 📋';
+    navigator.clipboard.writeText(bio.textContent).then(() => {
+        const btn = document.getElementById("copy-bio-btn");
+        getLocalizedString("copied", "Copied!").then(text => {
+            const original = btn.textContent;
+            btn.textContent = text;
             setTimeout(() => {
-                btn.textContent = btn.textContent.replace(' 📋', '');
+                btn.textContent = original;
             }, 2000);
         });
+    });
 });
