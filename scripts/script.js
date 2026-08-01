@@ -663,8 +663,8 @@ document.addEventListener("partials:loaded", () => {
         toggle.setAttribute("aria-expanded", "false");
         menu.inert = true;
         menu.setAttribute("aria-hidden", "true");
-        barsIcon?.classList.remove("hide");
-        xmarkIcon?.classList.add("hide");
+        barsIcon?.classList.remove("hide-none");
+        xmarkIcon?.classList.add("hide-none");
     };
 
     const openMenu = () => {
@@ -672,8 +672,8 @@ document.addEventListener("partials:loaded", () => {
         menu.inert = false;
         menu.setAttribute("aria-hidden", "false");
         toggle.setAttribute("aria-expanded", "true");
-        barsIcon?.classList.add("hide");
-        xmarkIcon?.classList.remove("hide");
+        barsIcon?.classList.add("hide-none");
+        xmarkIcon?.classList.remove("hide-none");
     };
 
     toggle.addEventListener("click", () => {

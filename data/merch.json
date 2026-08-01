@@ -1,0 +1,23 @@
+[
+    {
+        "title": "Vinyl sticker",
+        "type": "Sticker",
+        "price": "€5",
+        "image": "images/merch/sticker.jpg",
+        "url": "https://wayne-matthews-shop.fourthwall.com/products/PLACEHOLDER"
+    },
+    {
+        "title": "Unisex T-shirt",
+        "type": "T-shirt",
+        "price": "€25",
+        "image": "images/merch/tshirt.jpg",
+        "url": "https://wayne-matthews-shop.fourthwall.com/products/PLACEHOLDER"
+    },
+    {
+        "title": "Hoodie",
+        "type": "Hoodie",
+        "price": "€45",
+        "image": "images/merch/hoodie.jpg",
+        "url": "https://wayne-matthews-shop.fourthwall.com/products/PLACEHOLDER"
+    }
+]

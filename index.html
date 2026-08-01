@@ -40,7 +40,9 @@
     <header>
         <div class="herofade" style="transform: translateX(-40px);">
             <div class="header-logo  hide-on-scroll">
-                <a href="index.html">Wayne Matthews</a>
+                <a href="index.html">
+                    <div data-component="logo-fullname"></div>
+                </a>
             </div>
         </div>
 
@@ -59,7 +61,7 @@
         <!--MOBILE MENU-->
         <button class="menu-toggle herofade icon-button" style="transform: translateX(40px);" aria-label="Open menu" aria-expanded="false">
             <svg class="icon icon-bars" aria-hidden="true" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
-            <svg class="icon icon-xmark hide" aria-hidden="true" viewBox="0 0 384 512"><path fill="currentColor" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"/></svg>
+            <svg class="icon icon-xmark hide-none" aria-hidden="true" viewBox="0 0 384 512"><path fill="currentColor" d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"/></svg>
         </button>
 
         <div class="mobile-menu stack gap-sm pad-lg" inert="true" aria-hidden="true">
@@ -79,9 +81,9 @@
     <main>
         <div class="hero" id="home">
             <div class="hero-image"></div>
-            <div class="hero-content" style="transform: translateY(100px);">
-                <div class="stack">
-                    <h1 class="herofade" style="transform: translateY(40px);">Wayne Matthews</h1>
+            <div class="hero-content" style="transform: translateY(80px);">
+                <div class="stack" transform-origin="top">
+                    <div data-component="logo-fullname" class="herofade hero-logo" style="transform: translateY(40px);"></div>
                     <p class="herofade lead eyebrow" style="transform: translateY(60px);">Singer • Songwriter</p>
                     <p class="herofade lead" style="transform: translateY(70px);">New music. New stories. Coming soon.</p>
                 </div>
