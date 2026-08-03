@@ -357,6 +357,7 @@ document.addEventListener("partials:loaded", () => {
     document.querySelectorAll('[data-render="gallery"]').forEach(container => { renderGallery(container); });
     document.querySelectorAll('[data-render="featured-videos"]').forEach(container => { renderVideos(container); });
     document.querySelectorAll('[data-render="tour-dates"]').forEach(container => { renderTourDates(container); });
+    document.querySelectorAll('[data-render="merch"]').forEach(container => { renderMerch(container); });
     document.querySelectorAll('[data-render="press-photos"]').forEach(container => { renderPressPhotos(container); });
     
     applyLanguage();
@@ -509,6 +510,65 @@ function renderTourDates(container) {
         });
 }
 
+
+// MERCH
+const FOURTHWALL_STOREFRONT_TOKEN = "ptkn_7e193726-68b5-45cd-bbf4-33553ee01402";
+const MERCH_STORE_URL = "https://merch.wayne-matthews.com";
+
+function renderMerch(container) {
+    return fetch(`https://storefront-api.fourthwall.com/v1/collections/all/products?storefront_token=${FOURTHWALL_STOREFRONT_TOKEN}`)
+        .then(response => response.json())
+        .then(data => {
+            const template = document.getElementById("merch-card-template");
+            const products = data.results || [];
+
+            const renderCard = (product) => {
+                const clone = template.content.cloneNode(true);
+                const prices = product.variants.map(v => v.unitPrice.value);
+                const minPrice = Math.min(...prices);
+                const currencySymbol = product.variants[0]?.unitPrice?.currency === "USD" ? "$" : "";
+
+                const img = clone.querySelector('[data-field="image"]');
+                img.src = product.images?.[0]?.url || "";
+                img.alt = `${product.name} product photo`;
+
+                clone.querySelector('[data-field="title"]').textContent = product.name;
+                clone.querySelector('[data-field="price"]').textContent = `From ${currencySymbol}${minPrice}`;
+                clone.querySelector('[data-field="link"]').href = `${MERCH_STORE_URL}/products/${product.slug}`;
+
+                const swatchContainer = clone.querySelector('[data-field="swatches"]');
+                const defaultImageUrl = img.src;
+
+                const seenColors = new Set();
+                product.variants.forEach(variant => {
+                    const color = variant.attributes?.color;
+                    if (!color || seenColors.has(color.name)) return;
+                    seenColors.add(color.name);
+
+                    const variantImageUrl = variant.images?.[0]?.url || defaultImageUrl;
+
+                    const dot = document.createElement("span");
+                    dot.className = "swatch-dot";
+                    dot.style.backgroundColor = color.swatch;
+                    dot.title = color.name;
+
+                    dot.addEventListener("mouseenter", () => {
+                        img.src = variantImageUrl;
+                    });
+
+                    swatchContainer.appendChild(dot);
+                });
+
+                return clone;
+            };
+
+            initCarousel(container, products, renderCard);
+        })
+        .catch(error => {
+            console.error("Error loading merch:", error);
+            showLoadError(container);
+        });
+}
 
 
 /* =========================================================

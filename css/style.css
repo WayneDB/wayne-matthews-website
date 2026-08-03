@@ -109,6 +109,16 @@ section {
     margin-inline: auto;
 }
 
+.flex-fill-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.justify-evenly {
+    justify-content: space-evenly;
+}
+
 /* =============================================================
    CAROUSEL
 ============================================================= */
@@ -372,6 +382,28 @@ button:hover {
 }
 
 /* =============================================================
+   SWATCHES
+============================================================= */
+
+.swatch-row {
+    display: flex;
+    gap: 6px;
+    margin-top: var(--space-xs);
+}
+
+.swatch-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+    display: inline-block;
+}
+
+.swatch-dot:hover {
+    transform: scale(120%);
+}
+
+/* =============================================================
    VIDEO EMBED
 ============================================================= */
 
@@ -506,7 +538,7 @@ footer {
     text-decoration: none;
     text-transform: uppercase;
     font-size: .8rem;
-    padding: var(--space-sm);
+    padding: var(--space-xs);
     font-weight: var(--weight-medium);
     letter-spacing: 2.5px;
     text-shadow: 0 2px 8px var(--shadow);
