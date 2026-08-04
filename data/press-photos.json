@@ -1,22 +1,17 @@
 [
     { 
-        "image": "images/press/20260419 - Wayne in Kavka-103.jpg", 
-        "download": "images/press/highRes/20260419 - Wayne in Kavka-103.jpg", 
-        "alt": "Wayne Matthews performing live at Kavka Oudaan" 
+        "image": "images/press/20240514 Brugge WM-00056.jpg", 
+        "download": "images/press/highRes/20240514 Brugge WM-00056.jpg", 
+        "alt": "Wayne Matthews in Bruges" 
     },
     { 
-        "image": "images/press/20260419 - Wayne in Kavka-145.jpg", 
-        "download": "images/press/highRes/20260419 - Wayne in Kavka-145.jpg", 
-        "alt": "Wayne Matthews performing live at Kavka Oudaan" 
+        "image": "images/press/2026 - EP cmeo Cover Shoot.jpg", 
+        "download": "images/press/highRes/2026 - EP cmeo Cover Shoot.jpg", 
+        "alt": "Wayne Matthews EP Cover Shoot Photo" 
     },
     { 
         "image": "images/press/20240514 Brugge WM-00069.jpg", 
         "download": "images/press/highRes/20240514 Brugge WM-00069.jpg", 
-        "alt": "Wayne Matthews in Bruges" 
-    },
-    { 
-        "image": "images/press/20240514 Brugge WM-00056.jpg", 
-        "download": "images/press/highRes/20240514 Brugge WM-00056.jpg", 
         "alt": "Wayne Matthews in Bruges" 
     },
     { 
@@ -25,8 +20,13 @@
         "alt": "Wayne Matthews in Bruges" 
     },
     { 
-        "image": "images/press/2026 - EP cmeo Cover Shoot.jpg", 
-        "download": "images/press/highRes/2026 - EP cmeo Cover Shoot.jpg", 
-        "alt": "Wayne Matthews EP Cover Shoot Photo" 
+        "image": "images/press/20260419 - Wayne in Kavka-145.jpg", 
+        "download": "images/press/highRes/20260419 - Wayne in Kavka-145.jpg", 
+        "alt": "Wayne Matthews performing live at Kavka Oudaan" 
+    },
+    { 
+        "image": "images/press/20260419 - Wayne in Kavka-103.jpg", 
+        "download": "images/press/highRes/20260419 - Wayne in Kavka-103.jpg", 
+        "alt": "Wayne Matthews performing live at Kavka Oudaan" 
     }
 ]
