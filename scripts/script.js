@@ -299,9 +299,14 @@ function initCarousel(container, items, renderItem) {
             const newColumns = countColumns();
             if (newColumns !== columns) {
                 columns = newColumns;
-                page = 0;
                 buildGrid();
                 fillPage();
+            } else if (cardWidth) {
+                // Column count is unchanged, but re-measure the natural width
+                // in case the row itself resized (e.g. a single full-width card).
+                cards.forEach(card => { card.style.width = ""; });
+                cardWidth = cards[0]?.getBoundingClientRect().width || cardWidth;
+                cards.forEach(card => { card.style.width = `${cardWidth}px`; });
             }
         }, 150);
     });
@@ -535,6 +540,7 @@ function renderMerch(container) {
                 clone.querySelector('[data-field="title"]').textContent = product.name;
                 clone.querySelector('[data-field="price"]').textContent = `From ${currencySymbol}${minPrice}`;
                 clone.querySelector('[data-field="link"]').href = `${MERCH_STORE_URL}/products/${product.slug}`;
+                clone.querySelector('[data-field="link"]').setAttribute("aria-label", `${product.name} — from ${currencySymbol}${minPrice}`);
 
                 const swatchContainer = clone.querySelector('[data-field="swatches"]');
                 const defaultImageUrl = img.src;
@@ -551,6 +557,7 @@ function renderMerch(container) {
                     dot.className = "swatch-dot";
                     dot.style.backgroundColor = color.swatch;
                     dot.title = color.name;
+                    dot.setAttribute("aria-hidden", "true");
 
                     dot.addEventListener("mouseenter", () => {
                         img.src = variantImageUrl;

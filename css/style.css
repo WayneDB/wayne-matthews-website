@@ -294,6 +294,7 @@ button:hover {
     filter: drop-shadow(0 2px 5px var(--shadow));
     transition: color var(--transition), transform var(--transition);
     cursor: pointer;
+    z-index: 75;
 }
 
 .icon-button:hover {
