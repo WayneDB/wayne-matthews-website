@@ -719,7 +719,7 @@ footer {
 }
 
 .link-btn:hover {
-    background: linear-gradient(var(--shadow), var(--secondary));
+    background: var(--secondary);
     color: var(--text-dark);
     border-color: var(--secondary);
     transform: translateY(-2px);
@@ -731,12 +731,13 @@ footer {
 }
 
 .link-btn.featured:hover {
-    background: linear-gradient(rgb(from var(--primary) r g b / 50%), var(--secondary));
+    background: var(--secondary);
     border-color: var(--secondary);
 }
 
 .link-btn:hover .link-btn-eyebrow {
-    color: var(--text-light);
+    color: var(--primary);
+    font-weight: var(--weight-semibold);
 }
 .link-btn:hover .link-btn-label,
 .link-btn:hover svg,
