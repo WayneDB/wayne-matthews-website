@@ -11,7 +11,8 @@
         "mentions": [
             { "text": "Opened for Joker Out (Slovenia's 2023 Eurovision entry) at Trix, Borgerhout", "url": null },
             { "text": "Featured by Groovehunter", "url": "https://www.groovehunter.net/en/wayne-matthews-belgium/" },
-            { "text": "National radio play on Radio 2 for \"Lonely\"", "url": null }
+            { "text": "National radio play on Radio 2 for \"Lonely\"", "url": null },
+            { "text": "Played at: Leffingeleuren, Gentse Feesten, Kavka Antwerp, Rotown Rotterdam", "url": null }
         ]
     },
     "nl": {
@@ -26,7 +27,8 @@
         "mentions": [
             { "text": "Voorprogramma van Joker Out (de Sloveense inzending voor het Eurovisiesongfestival van 2023) in Trix, Borgerhout", "url": null },
             { "text": "Aanbevolen door Groovehunter", "url": "https://www.groovehunter.net/en/wayne-matthews-belgium/" },
-            { "text": "Nationale airplay op Radio 2 met \"Lonely\"", "url": null}
+            { "text": "Nationale airplay op Radio 2 met \"Lonely\"", "url": null},
+            { "text": "Gespeelde shows: Leffingeleuren, Gentse Feesten, Kavka Antwerp, Rotown Rotterdam", "url": null }
         ]
     }
 }

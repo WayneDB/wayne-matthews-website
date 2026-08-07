@@ -83,6 +83,7 @@ section {
     display: flex;
     flex-direction: column;
     text-align: center;
+    position: relative;
     padding: clamp(var(--space-md), 5%, var(--space-xl)) clamp(var(--space-sm), 10%, var(--space-lg)) 
 }
 
@@ -106,6 +107,7 @@ section {
 .left {
     align-items: flex-start;
     justify-content: flex-start;
+    align-self: flex-start;
 }
 
 .fit-content {
@@ -319,15 +321,14 @@ button:hover {
 
 .card {
     position: relative;
-    background: var(--background-dark);
     transition: transform var(--transition), border-color var(--transition), filter var(--transition);
     cursor: pointer;
 }
 
 .card:hover {
+    background: var(--shadow);
     transform: translateY(-10px) scale(105%);
     transition: var(--transition);
-    border-color: var(--secondary);
     filter: drop-shadow(5px 5px 10px var(--shadow));
     z-index: 50;
 }
@@ -686,6 +687,20 @@ footer {
     width: 100%;
     fill: currentColor;
     vertical-align: middle;
+}
+
+.section-bg-image {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.parallax {
+    background-attachment: fixed;
 }
 
 
